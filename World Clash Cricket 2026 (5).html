@@ -1,0 +1,3865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>World Clash Cricket 2026</title>
+<style>
+  :root {
+    --bg-obsidian: #060b14;
+    --bg-panel: rgba(11, 19, 34, 0.96);
+    --bg-card: rgba(16, 27, 46, 0.97);
+    --border-subtle: rgba(148, 163, 184, 0.24);
+    --border-gold: rgba(250, 204, 21, 0.45);
+    --emerald: #10b981;
+    --gold: #facc15;
+    --amber: #f59e0b;
+    --crimson: #ef4444;
+    --cyan: #38bdf8;
+    --purple: #a855f7;
+    --bat-accent: #1d4ed8;
+    --bowl-accent: #eab308;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --text-dim: #64748b;
+    --radius-sm: 7px;
+    --radius-md: 11px;
+    --radius-lg: 14px;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  [data-action] {
+    cursor: pointer;
+    touch-action: manipulation;
+    user-select: none;
+    position: relative;
+  }
+
+  [data-action] * {
+    pointer-events: none;
+  }
+
+  select, input {
+    touch-action: manipulation;
+    user-select: auto;
+  }
+
+  html, body {
+    width: 100vw;
+    height: 100dvh;
+    max-width: 100vw;
+    max-height: 100dvh;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse at 50% -10%, rgba(16, 185, 129, 0.16) 0%, transparent 55%),
+      radial-gradient(circle at 50% 10%, #132945 0%, #070d17 56%, #04070e 100%);
+    color: var(--text-main);
+    font-family: var(--font-sans);
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
+  #portrait-banner {
+    display: none;
+    background: linear-gradient(90deg, #78350f, #b45309, #78350f);
+    color: #fef3c7;
+    font-size: 11px;
+    font-weight: 800;
+    text-align: center;
+    padding: 4px 10px;
+    border-bottom: 1px solid var(--gold);
+    flex-shrink: 0;
+    z-index: 40;
+  }
+  @media (orientation: portrait) and (max-width: 760px) {
+    #portrait-banner { display: block; }
+  }
+
+  #app {
+    width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .view {
+    display: none;
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    min-height: 0;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .view.active { display: flex; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: clamp(4px, 0.85vh, 7px) clamp(8px, 1.15vw, 13px);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-subtle);
+    background: linear-gradient(180deg, #1d2d47 0%, #101a2c 100%);
+    color: var(--text-main);
+    font-weight: 800;
+    font-size: clamp(9.5px, 1.35vh, 11.5px);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    transition: transform 0.08s ease, border-color 0.12s ease;
+    white-space: nowrap;
+    line-height: 1.15;
+    touch-action: manipulation;
+  }
+  .btn:hover:not(:disabled) { border-color: rgba(255, 255, 255, 0.5); }
+  .btn:active:not(:disabled) { transform: scale(0.95); }
+  .btn:disabled { opacity: 0.36; cursor: not-allowed; }
+  .btn-emerald { background: linear-gradient(180deg, #10b981 0%, #047857 100%); border-color: #34d399; color: #022c22; }
+  .btn-gold { background: linear-gradient(180deg, #fde047 0%, #d97706 100%); border-color: #fef08a; color: #1c1917; }
+  .btn-crimson { background: linear-gradient(180deg, #f87171 0%, #b91c1c 100%); border-color: #fca5a5; color: #fff; }
+  .btn-cyan { background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%); border-color: #7dd3fc; color: #082f49; }
+  .btn-xs { padding: 3px 6px; font-size: clamp(8.5px, 1.2vh, 10px); }
+
+  .broadcast-header {
+    height: clamp(34px, 6.2vh, 42px);
+    min-height: 34px;
+    background: linear-gradient(90deg, #060b14 0%, #102038 50%, #060b14 100%);
+    border-bottom: 1px solid var(--border-gold);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .brand-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 900;
+    font-size: clamp(11px, 1.8vh, 14px);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .live-pill {
+    background: linear-gradient(180deg, #ef4444, #b91c1c);
+    color: #fff;
+    font-size: 8.5px;
+    font-weight: 900;
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.08em;
+  }
+
+  /* ==================== HOME SCREEN (#view-home) ==================== */
+  .home-body {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 10px;
+    padding: clamp(7px, 1.4vh, 12px) clamp(10px, 1.5vw, 15px);
+    overflow: hidden;
+    min-height: 0;
+  }
+  @media (max-width: 720px) and (orientation: portrait) {
+    .home-body {
+      grid-template-columns: 1fr;
+      overflow-y: auto;
+    }
+  }
+  .hero-panel, .quick-setup-panel {
+    background: linear-gradient(160deg, rgba(16, 30, 52, 0.96) 0%, rgba(8, 15, 27, 0.98) 100%);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: clamp(8px, 1.5vh, 13px) clamp(10px, 1.6vw, 15px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    min-height: 0;
+  }
+  .mode-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(5px, 1vh, 8px);
+  }
+  .mode-card {
+    background: linear-gradient(160deg, #16263d 0%, #0c1524 100%);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: clamp(6px, 1.1vh, 9px) 9px;
+    transition: border-color 0.12s ease, transform 0.08s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2px;
+    text-align: left;
+    color: var(--text-main);
+  }
+  .mode-card:hover { border-color: var(--gold); }
+  .mode-card:active { transform: scale(0.98); }
+  .mode-card-title {
+    font-size: clamp(10px, 1.55vh, 12px);
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .mode-card-sub {
+    font-size: clamp(8.5px, 1.25vh, 10px);
+    color: var(--text-muted);
+    line-height: 1.22;
+  }
+
+  .team-vs-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 6px;
+    background: rgba(12, 20, 36, 0.85);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: clamp(5px, 0.9vh, 7px);
+  }
+  .team-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+  .team-select {
+    width: 100%;
+    background: #17263e;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 6px;
+    padding: 3px 5px;
+    font-size: clamp(9.5px, 1.35vh, 11px);
+    font-weight: 700;
+    outline: none;
+    cursor: pointer;
+  }
+  .pill-group { display: flex; gap: 4px; }
+  .pill-opt {
+    flex: 1;
+    padding: clamp(3px, 0.7vh, 5px) 5px;
+    border-radius: 6px;
+    border: 1px solid var(--border-subtle);
+    background: #131f33;
+    color: var(--text-muted);
+    font-size: clamp(8.5px, 1.25vh, 10px);
+    font-weight: 800;
+    text-align: center;
+    transition: all 0.1s ease;
+  }
+  .pill-opt:active { transform: scale(0.96); }
+  .pill-opt.active {
+    background: rgba(16, 185, 129, 0.26);
+    border-color: var(--emerald);
+    color: #fff;
+  }
+
+  /* ==================== LIVE MATCH HUD (#view-match) ==================== */
+  .match-topbar {
+    height: clamp(36px, 6.5vh, 44px);
+    min-height: 36px;
+    background: linear-gradient(90deg, #060b14 0%, #0f1e35 50%, #060b14 100%);
+    border-bottom: 1px solid var(--border-gold);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    padding: 0 8px;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .score-bug {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(90deg, rgba(15, 25, 44, 0.96) 0%, rgba(24, 41, 70, 0.96) 100%);
+    border: 1px solid var(--border-gold);
+    border-left: 4px solid var(--bat-accent);
+    border-radius: 999px;
+    padding: 2px 10px 2px 5px;
+  }
+  .score-main-num {
+    font-family: var(--font-mono);
+    font-size: clamp(13px, 2.2vh, 17px);
+    font-weight: 900;
+    color: var(--gold);
+  }
+  .score-overs {
+    font-family: var(--font-mono);
+    font-size: clamp(9.5px, 1.45vh, 11.5px);
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+  .match-status-strip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    overflow: hidden;
+  }
+  .status-tag {
+    background: rgba(16, 185, 129, 0.16);
+    border: 1px solid rgba(16, 185, 129, 0.45);
+    color: #6ee7b7;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: clamp(8.5px, 1.25vh, 10px);
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+  .speaking-pill {
+    background: rgba(16, 185, 129, 0.25);
+    border: 1px solid #34d399;
+    color: #6ee7b7;
+    font-size: 8.5px;
+    font-weight: 900;
+    padding: 2px 6px;
+    border-radius: 999px;
+    animation: pulseSpeak 1s infinite ease-in-out;
+  }
+  @keyframes pulseSpeak {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.65; transform: scale(0.96); }
+  }
+
+  .match-grid {
+    flex: 1;
+    height: 100%;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: clamp(195px, 24.5vw, 265px) 1fr clamp(210px, 28vw, 320px);
+    gap: clamp(5px, 0.85vw, 9px);
+    padding: clamp(4px, 0.8vh, 7px) clamp(6px, 1vw, 10px);
+    overflow: hidden;
+  }
+
+  .hud-col {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(4px, 0.75vh, 6px);
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .broadcast-card {
+    background: linear-gradient(170deg, rgba(16, 27, 46, 0.95) 0%, rgba(9, 15, 27, 0.98) 100%);
+    border: 1px solid var(--border-subtle);
+    border-top: 1px solid rgba(250, 204, 21, 0.24);
+    border-radius: var(--radius-md);
+    padding: clamp(4px, 0.7vh, 6px) clamp(6px, 0.85vw, 8px);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .card-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: clamp(8px, 1.15vh, 9.5px);
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+    padding-bottom: 2px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+  }
+
+  /* LEFT SIDEBAR */
+  .field-left-stats {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: clamp(8.5px, 1.25vh, 10px);
+    font-weight: 900;
+    margin-bottom: 2px;
+  }
+  .star-strip {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 1.5px;
+    margin-bottom: 3px;
+  }
+  .star-btn {
+    background: #0b1322;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 3px;
+    padding: 1.5px 0;
+    font-size: clamp(8.5px, 1.3vh, 10.5px);
+    line-height: 1;
+    text-align: center;
+    color: var(--text-muted);
+  }
+  .star-btn.in-star { color: var(--gold); border-color: rgba(250, 204, 21, 0.55); background: rgba(250, 204, 21, 0.16); }
+  .star-btn.out-star { color: var(--cyan); border-color: rgba(56, 189, 248, 0.38); }
+  .star-btn:disabled { cursor: default; opacity: 0.85; }
+
+  .field-preset-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2px;
+  }
+
+  .batter-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: clamp(2.5px, 0.45vh, 4px) 5px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid transparent;
+  }
+  .batter-row.striker {
+    background: linear-gradient(90deg, rgba(250, 204, 21, 0.16) 0%, rgba(16, 185, 129, 0.08) 100%);
+    border-color: rgba(250, 204, 21, 0.45);
+  }
+  .batter-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3px;
+    font-size: clamp(9px, 1.3vh, 10.5px);
+    font-weight: 800;
+  }
+  .player-name-trunc {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+  .mini-pill {
+    font-family: var(--font-mono);
+    font-size: clamp(7px, 1vh, 8.2px);
+    font-weight: 900;
+    padding: 1px 3.5px;
+    border-radius: 3px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+  .pill-style { background: rgba(56, 189, 248, 0.18); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.35); }
+  .pill-pwr { background: rgba(250, 204, 21, 0.18); color: #fde047; border: 1px solid rgba(250, 204, 21, 0.35); }
+  .pill-weak { background: rgba(239, 68, 68, 0.18); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.35); }
+  .pill-bowltype { background: rgba(168, 85, 247, 0.2); color: #e9d5ff; border: 1px solid rgba(168, 85, 247, 0.4); }
+
+  .meter-track {
+    width: 100%;
+    height: 3.5px;
+    background: rgba(15, 23, 42, 0.95);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .meter-fill-eye { height: 100%; background: linear-gradient(90deg, #10b981, #facc15); transition: width 0.2s ease; }
+
+  /* CENTER STAGE */
+  .center-stage {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-gold);
+    background:
+      radial-gradient(circle at 50% 25%, rgba(16, 185, 129, 0.12) 0%, transparent 60%),
+      linear-gradient(175deg, #0b1526 0%, #070d17 65%, #040810 100%);
+    padding: clamp(5px, 0.9vh, 8px) clamp(6px, 1vw, 10px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: clamp(4px, 0.75vh, 6px);
+    overflow: hidden;
+    min-height: 0;
+    position: relative;
+  }
+
+  .broadcast-event-banner {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.88);
+    z-index: 25;
+    padding: 3px 12px;
+    border-radius: 999px;
+    font-size: clamp(9.5px, 1.45vh, 11.5px);
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.18s ease, transform 0.2s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.65);
+  }
+  .broadcast-event-banner.show {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+  .banner-six { background: linear-gradient(90deg, #facc15, #f59e0b); color: #1c1917; border: 1.5px solid #fef9c3; }
+  .banner-four { background: linear-gradient(90deg, #38bdf8, #0284c7); color: #fff; border: 1.5px solid #bae6fd; }
+  .banner-wicket { background: linear-gradient(90deg, #ef4444, #991b1b); color: #fff; border: 1.5px solid #fecaca; }
+  .banner-milestone { background: linear-gradient(90deg, #10b981, #047857); color: #fff; border: 1.5px solid #a7f3d0; }
+
+  .numeric-hero-box {
+    flex: 1.15;
+    min-height: 0;
+    border-radius: var(--radius-md);
+    border: 1.5px solid rgba(250, 204, 21, 0.32);
+    background: radial-gradient(circle at 50% 35%, rgba(250, 204, 21, 0.12) 0%, rgba(15, 23, 42, 0.88) 78%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3px 6px;
+    position: relative;
+    overflow: hidden;
+  }
+  .numeric-hero-box.outcome-six {
+    border-color: #fde047;
+    background: radial-gradient(circle at 50% 35%, rgba(250, 204, 21, 0.36) 0%, rgba(66, 32, 6, 0.74) 85%);
+  }
+  .numeric-hero-box.outcome-four {
+    border-color: #38bdf8;
+    background: radial-gradient(circle at 50% 35%, rgba(56, 189, 248, 0.32) 0%, rgba(8, 47, 73, 0.74) 85%);
+  }
+  .numeric-hero-box.outcome-wicket {
+    border-color: #f87171;
+    background: radial-gradient(circle at 50% 35%, rgba(239, 68, 68, 0.38) 0%, rgba(69, 10, 10, 0.78) 85%);
+  }
+  .numeric-hero-box.outcome-run {
+    border-color: #34d399;
+    background: radial-gradient(circle at 50% 35%, rgba(16, 185, 129, 0.26) 0%, rgba(6, 78, 59, 0.6) 85%);
+  }
+
+  .hero-over-stamp {
+    font-family: var(--font-mono);
+    font-size: clamp(8.5px, 1.25vh, 10.5px);
+    font-weight: 800;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+  }
+  .hero-big-number {
+    font-family: var(--font-mono);
+    font-size: clamp(32px, 8.2vh, 64px);
+    font-weight: 900;
+    line-height: 0.94;
+    color: #ffffff;
+    text-shadow: 0 3px 16px rgba(0, 0, 0, 0.75);
+    margin: 1px 0;
+  }
+  .numeric-hero-box.outcome-six .hero-big-number { color: var(--gold); }
+  .numeric-hero-box.outcome-four .hero-big-number { color: var(--cyan); }
+  .numeric-hero-box.outcome-wicket .hero-big-number { color: var(--crimson); }
+  .numeric-hero-box.outcome-run .hero-big-number { color: #6ee7b7; }
+
+  .hero-word-tag {
+    font-size: clamp(10px, 1.55vh, 13px);
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .hero-short-line {
+    font-size: clamp(9px, 1.35vh, 11px);
+    font-weight: 700;
+    color: #cbd5e1;
+    margin-top: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 96%;
+  }
+
+  .this-over-strip {
+    background: rgba(15, 23, 42, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    padding: clamp(3px, 0.65vh, 5px) 7px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .ball-bubbles {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    flex-wrap: nowrap;
+  }
+  .ball-dot {
+    width: clamp(18px, 2.7vh, 22px);
+    height: clamp(18px, 2.7vh, 22px);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: clamp(8.5px, 1.3vh, 10.5px);
+    font-weight: 900;
+    background: #1e293b;
+    color: #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+  }
+  .ball-dot.b-4 { background: #0284c7; color: #fff; border-color: #7dd3fc; }
+  .ball-dot.b-6 { background: linear-gradient(135deg, #facc15, #d97706); color: #1c1917; border-color: #fef08a; }
+  .ball-dot.b-W { background: #dc2626; color: #fff; border-color: #fca5a5; }
+  .ball-dot.b-run { background: #059669; color: #fff; border-color: #6ee7b7; }
+
+  .recent-overs-box {
+    flex: 0.85;
+    min-height: 0;
+    background: rgba(6, 10, 16, 0.86);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 8px;
+    padding: 4px 6px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .recent-overs-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .recent-over-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+    padding: 2.5px 6px;
+    border-radius: 5px;
+    background: rgba(19, 31, 51, 0.76);
+    font-family: var(--font-mono);
+    font-size: clamp(8.5px, 1.3vh, 10px);
+    font-weight: 800;
+  }
+
+  /* RIGHT CONTROLS */
+  .shot-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: clamp(4px, 0.75vh, 7px);
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .shot-card {
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--border-subtle);
+    background: linear-gradient(165deg, #17263e 0%, #0c1423 100%);
+    padding: clamp(3px, 0.65vh, 6px) 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    gap: 1.5px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+    transition: transform 0.08s ease, border-color 0.12s ease;
+    overflow: hidden;
+    min-height: 0;
+    touch-action: manipulation;
+  }
+  .shot-card:hover:not(:disabled) { border-color: rgba(250, 204, 21, 0.75); }
+  .shot-card:active:not(:disabled) { transform: scale(0.95); }
+  .shot-card:disabled { opacity: 0.34; cursor: not-allowed; }
+  .shot-card.shot-stop { border-color: rgba(148, 163, 184, 0.5); }
+  .shot-card.shot-push { border-color: rgba(16, 185, 129, 0.6); }
+  .shot-card.shot-smash { border-color: rgba(56, 189, 248, 0.65); }
+  .shot-card.shot-loft {
+    border-color: rgba(250, 204, 21, 0.85);
+    background: linear-gradient(165deg, #2b2211 0%, #151118 100%);
+  }
+  .shot-card.repeat-warn { box-shadow: inset 0 0 0 1.5px rgba(239, 68, 68, 0.85); }
+
+  .shot-title-top {
+    width: 100%;
+    text-align: center;
+    font-weight: 900;
+    font-size: clamp(13px, 2vw, 19px);
+    letter-spacing: 0.05em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .shot-meter-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5px;
+    width: 100%;
+  }
+  .shot-meter-labels {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: clamp(7.5px, 1.08vh, 9.2px);
+    font-weight: 900;
+    line-height: 1;
+  }
+  .shot-dual-bar {
+    width: 100%;
+    height: clamp(5px, 0.85vh, 7px);
+    border-radius: 999px;
+    background: #090e18;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    overflow: hidden;
+    display: flex;
+  }
+  .shot-bar-safe {
+    height: 100%;
+    background: linear-gradient(90deg, #fde047 0%, #eab308 100%);
+    transition: width 0.2s ease;
+  }
+  .shot-bar-out {
+    height: 100%;
+    background: linear-gradient(90deg, #ef4444 0%, #b91c1c 100%);
+    transition: width 0.2s ease;
+  }
+
+  .shot-eye-big {
+    width: 100%;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: clamp(11px, 1.65vw, 15px);
+    font-weight: 900;
+    color: #22c55e;
+    text-shadow: 0 0 8px rgba(34, 197, 94, 0.35);
+    letter-spacing: 0.02em;
+    line-height: 1.05;
+  }
+  .shot-eye-big.eye-drain {
+    color: #f59e0b;
+    text-shadow: 0 0 8px rgba(245, 158, 11, 0.38);
+  }
+  .shot-eye-big.locked-test {
+    color: #ef4444;
+    text-shadow: none;
+    font-size: clamp(9.5px, 1.35vw, 12.5px);
+  }
+
+  .shot-out-center {
+    width: 100%;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: clamp(9.5px, 1.38vw, 12.5px);
+    font-weight: 900;
+    color: #ff4d4d;
+    letter-spacing: 0.03em;
+    line-height: 1.05;
+    text-transform: uppercase;
+  }
+
+  .run-chips-row {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    background: rgba(5, 9, 17, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 2px 3px;
+    border-radius: 5px;
+  }
+  .run-chip {
+    font-family: var(--font-mono);
+    font-size: clamp(7.2px, 1.05vh, 8.8px);
+    font-weight: 900;
+    padding: 1px 3px;
+    border-radius: 3px;
+    line-height: 1.05;
+    white-space: nowrap;
+    background: rgba(30, 41, 59, 0.9);
+    color: #e2e8f0;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+  }
+  .run-chip.rc-0 { color: #94a3b8; background: rgba(15, 23, 42, 0.9); }
+  .run-chip.rc-1, .run-chip.rc-2, .run-chip.rc-3 {
+    color: #6ee7b7;
+    background: rgba(6, 78, 59, 0.55);
+    border-color: rgba(16, 185, 129, 0.4);
+  }
+  .run-chip.rc-4 {
+    color: #7dd3fc;
+    background: rgba(8, 47, 73, 0.75);
+    border-color: rgba(56, 189, 248, 0.55);
+  }
+  .run-chip.rc-6 {
+    color: #fef08a;
+    background: linear-gradient(180deg, rgba(161, 98, 7, 0.75), rgba(113, 63, 18, 0.85));
+    border-color: rgba(250, 204, 21, 0.75);
+  }
+
+  .sim-helper-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+
+  .pvp-lock-banner {
+    background: linear-gradient(90deg, rgba(168, 85, 247, 0.25), rgba(250, 204, 21, 0.2));
+    border: 1px solid var(--gold);
+    border-radius: 6px;
+    padding: 4px 6px;
+    margin-bottom: 4px;
+    font-size: clamp(8.5px, 1.25vh, 10px);
+    font-weight: 800;
+    color: #fef08a;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  /* ==================== MODALS (STRICT OVERLAY SAFETY) ==================== */
+  .modal-backdrop {
+    display: none;
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(3, 7, 14, 0.88);
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+  }
+  .modal-backdrop.open {
+    display: flex;
+    pointer-events: auto;
+  }
+  #modal-dialog { z-index: 120; }
+  #modal-toss { z-index: 115; }
+  #modal-bowler { z-index: 110; }
+  #modal-scorecard { z-index: 108; }
+  #modal-field { z-index: 105; }
+  #modal-squad { z-index: 105; }
+
+  .modal-box {
+    background: linear-gradient(165deg, #111c2e 0%, #09101b 100%);
+    border: 1px solid rgba(250, 204, 21, 0.42);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 820px;
+    max-height: 92dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75);
+  }
+  .modal-header {
+    padding: 7px 12px;
+    background: rgba(15, 23, 42, 0.96);
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .modal-body {
+    padding: 8px 12px;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+  }
+  .modal-footer {
+    padding: 7px 12px;
+    background: rgba(15, 23, 42, 0.96);
+    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .field-modal-grid {
+    display: grid;
+    grid-template-columns: 225px 1fr;
+    gap: 10px;
+    align-items: center;
+  }
+  .prob-table, .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: clamp(9px, 1.3vh, 10.5px);
+  }
+  .prob-table th, .prob-table td, .data-table th, .data-table td {
+    padding: 4px 5px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .prob-table th, .data-table th {
+    color: var(--text-muted);
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 9px;
+    background: rgba(15, 23, 42, 0.65);
+  }
+  .prob-table td:first-child, .prob-table th:first-child,
+  .data-table td:first-child, .data-table th:first-child {
+    text-align: left;
+    font-weight: 800;
+  }
+
+  .squad-swap-grid {
+    display: grid;
+    grid-template-columns: 1.28fr 0.72fr;
+    gap: 8px;
+  }
+  .squad-list-panel {
+    background: rgba(10, 17, 29, 0.78);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    overflow-y: auto;
+    max-height: 55dvh;
+  }
+  .player-swap-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+    padding: 4px 7px;
+    border-radius: 6px;
+    background: #132036;
+    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    font-size: 10.5px;
+  }
+  .player-swap-row.selected-swap {
+    border-color: var(--gold);
+    background: rgba(250, 204, 21, 0.22);
+  }
+  .role-badge {
+    font-size: 8.5px;
+    font-weight: 900;
+    padding: 1px 4px;
+    border-radius: 4px;
+  }
+  .role-BAT { background: rgba(56, 189, 248, 0.2); color: #7dd3fc; }
+  .role-WK { background: rgba(250, 204, 21, 0.2); color: #fde047; }
+  .role-AR { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; }
+  .role-BOWL { background: rgba(244, 63, 94, 0.2); color: #fda4af; }
+
+  .subscreen-body {
+    flex: 1;
+    padding: 8px 12px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 0;
+  }
+  .standings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  /* MUST BE VERY LAST CSS RULE SO MODALS AND INACTIVE ELEMENTS NEVER BLOCK CLICKS */
+  .hidden {
+    display: none !important;
+    pointer-events: none !important;
+  }
+
+  /* ===== v2 visual polish ===== */
+  .home-tabs { display: flex; gap: 6px; }
+  .home-tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 7px 6px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); background: linear-gradient(180deg, #16263d, #0c1524); color: var(--text-main); font-weight: 900; font-size: 11.5px; letter-spacing: .04em; }
+  .home-tab small { font-size: 8.5px; font-weight: 700; color: var(--text-muted); letter-spacing: 0; }
+  .home-tab.active { border-color: var(--gold); box-shadow: 0 0 14px rgba(250,204,21,.25); background: linear-gradient(180deg, #3a2f0b, #1a1405); }
+  .pill-trait { background: rgba(168,85,247,.2); color: #e9d5ff; border: 1px solid rgba(168,85,247,.45); }
+  #left-field-presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+  .hero-big-number { text-shadow: 0 0 22px currentColor; }
+  .numeric-hero-box.outcome-six { animation: wcPop .55s ease; }
+  .numeric-hero-box.outcome-four { animation: wcPop .45s ease; }
+  .numeric-hero-box.outcome-wicket { animation: wcShake .4s ease; }
+  @keyframes wcPop { 0% { transform: scale(.94); } 55% { transform: scale(1.04); } 100% { transform: scale(1); } }
+  @keyframes wcShake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+  .shot-card { transition: transform .1s ease, box-shadow .15s ease; }
+  .shot-card:hover:not(:disabled) { box-shadow: 0 0 16px rgba(250,204,21,.25); transform: translateY(-1px); }
+  .meter-fill-eye { background: linear-gradient(90deg, #10b981, #84cc16 60%, #facc15); box-shadow: 0 0 8px rgba(16,185,129,.55); }
+  .batter-row.striker { box-shadow: inset 3px 0 0 var(--gold), 0 0 12px rgba(250,204,21,.12); }
+  .ball-dot.b-6 { box-shadow: 0 0 8px rgba(250,204,21,.75); }
+  .ball-dot.b-W { box-shadow: 0 0 8px rgba(239,68,68,.75); }
+  .broadcast-card { box-shadow: 0 4px 14px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05); }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div id="portrait-banner">📱 Rotate device to Landscape for full broadcast stadium view</div>
+
+  <!-- ==================== 1. HOME SCREEN (#view-home) ==================== -->
+  <section id="view-home" class="view active">
+    <header class="broadcast-header">
+      <div class="brand-badge">
+        <span>🏏 WORLD CLASH CRICKET <span style="color: var(--gold);">2026</span></span>
+        <span class="live-pill">BROADCAST HD</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <button type="button" class="btn" data-action="toggle-audio" id="btn-audio-home">🔊 SFX ON</button>
+        <button type="button" class="btn btn-gold" data-action="open-squad-modal" data-team="p1">👥 SQUADS</button>
+      </div>
+    </header>
+
+    <div class="home-body">
+      <div class="hero-panel">
+        <div>
+          <div style="font-size:clamp(8.5px, 1.25vh, 10px); font-weight:800; letter-spacing:0.1em; color:var(--emerald); text-transform:uppercase;">
+            2026 INTERNATIONAL EDITION • 10 NATIONS • 150 PLAYERS
+          </div>
+          <h1 style="font-size: clamp(15px, 2.6vh, 21px); font-weight: 900; line-height: 1.15; margin-top:2px;">
+            TACTICAL BROADCAST <span style="color: var(--gold);">CRICKET ARENA</span>
+          </h1>
+          <p style="font-size: clamp(9px, 1.35vh, 11px); color: var(--text-muted); margin-top: 3px; line-height:1.28;">
+            5 batting styles with +50% base Power &amp; Pace/Spin matchups, calibrated Test Eye-In priority &amp; declarations, 10-star fielding radar, and ≥60% six-chance LOFT hitting.
+          </p>
+        </div>
+
+        <div class="home-tabs">
+          <button type="button" class="home-tab active" data-action="set-home-mode" data-val="sp">🎮 SINGLE PLAYER<small>Test every feature vs AI</small></button>
+          <button type="button" class="home-tab" data-action="set-home-mode" data-val="online">🌐 ONLINE MODE<small>Play a friend live</small></button>
+        </div>
+
+        <div class="mode-grid" id="home-sp-grid">
+          <div class="mode-card" style="grid-column:1 / -1; cursor:default;"><div class="mode-card-title"><span>🎮 SINGLE PLAYER</span><span style="color:var(--emerald);">PLAYER CONTROLLED</span></div><div class="mode-card-sub">Pick teams, format &amp; pitch on the right and play every ball yourself.</div></div>
+          
+          
+          </div>
+        <div class="mode-grid" id="home-online-grid" style="display:none;">
+          <button type="button" class="mode-card" data-action="open-pvp-screen" style="grid-column:1 / -1;">
+            <div class="mode-card-title"><span>📡 ONLINE PVP &amp; VOICE</span><span style="color:var(--purple);">LOBBY →</span></div>
+            <div class="mode-card-sub">5-digit code sync, live bowler &amp; field control, over-break bowler lock and voice chat.</div>
+          </button>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; padding-top:4px; border-top:1px solid rgba(255,255,255,0.08); font-size:clamp(8.5px, 1.25vh, 10px); color:var(--text-muted);">
+          <span>5 Styles + <strong style="color:var(--gold);">+50% PWR Base</strong></span>
+          <span>SMASH: <strong style="color:var(--cyan);">Ground 0–4</strong></span>
+          <span>LOFT: <strong style="color:var(--emerald);">≥60% Sixes</strong></span>
+        </div>
+      </div>
+
+      <div class="quick-setup-panel" id="home-online-panel" style="display:none;">
+        <div class="card-title-row" style="margin-bottom:0;"><span>ONLINE MODE</span><span style="color:var(--purple);">PLAYTEST</span></div>
+        <div style="font-size:10.5px; color:var(--text-muted); line-height:1.6;">
+          <div>1️⃣ Host picks team, format &amp; pitch, then creates a 5-digit code</div>
+          <div>2️⃣ Friend enters the code and picks a team</div>
+          <div>3️⃣ Host bats first • bowler &amp; field are set live • voice chat</div>
+        </div>
+        <button type="button" class="btn btn-emerald" style="padding:9px; font-size:11.5px;" data-action="open-pvp-screen">📡 OPEN ONLINE LOBBY</button>
+      </div>
+      <div class="quick-setup-panel" id="home-sp-panel">
+        <div class="card-title-row" style="margin-bottom:0;">
+          <span>MATCH SETUP</span>
+          <span style="color:var(--gold);">15-MAN ROSTERS</span>
+        </div>
+
+        <div class="team-vs-row">
+          <div class="team-box">
+            <div id="home-p1-shield"></div>
+            <select id="sel-p1-team" class="team-select"></select>
+            <button type="button" class="btn btn-xs" style="width:100%;" data-action="open-squad-modal" data-team="p1">SWAP XI (P1)</button>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:3px;">
+            <div style="font-size:9.5px; font-weight:900; color:var(--gold); background:rgba(250,204,21,0.12); border:1px solid rgba(250,204,21,0.35); border-radius:999px; padding:2px 7px;">VS</div>
+            <button type="button" class="btn btn-xs btn-cyan" data-action="swap-home-teams">⇄ SWAP</button>
+          </div>
+          <div class="team-box">
+            <div id="home-p2-shield"></div>
+            <select id="sel-p2-team" class="team-select"></select>
+            <button type="button" class="btn btn-xs" style="width:100%;" data-action="open-squad-modal" data-team="p2">SWAP XI (P2)</button>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size:8.5px; font-weight:800; color:var(--text-muted); margin-bottom:2px; text-transform:uppercase;">Match Format</div>
+          <div class="pill-group" id="format-pills">
+            <button type="button" class="pill-opt active" data-action="set-format" data-val="T20">T20 (20 OV)</button>
+            <button type="button" class="pill-opt" data-action="set-format" data-val="ODI">ODI (50 OV)</button>
+            <button type="button" class="pill-opt" data-action="set-format" data-val="TEST">TEST 5D</button>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size:8.5px; font-weight:800; color:var(--text-muted); margin-bottom:2px; text-transform:uppercase;">Pitch Condition</div>
+          <div class="pill-group" id="pitch-pills">
+            <button type="button" class="pill-opt active" data-action="set-pitch" data-val="BALANCED">⚖️ BALANCED</button>
+            <button type="button" class="pill-opt" data-action="set-pitch" data-val="FLAT">🏏 FLAT</button>
+            <button type="button" class="pill-opt" data-action="set-pitch" data-val="GREEN">🌿 GREEN</button>
+            <button type="button" class="pill-opt" data-action="set-pitch" data-val="DUSTY">🏜️ DUSTY</button>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr; gap:6px;">
+          <button type="button" class="btn btn-emerald" style="padding:7px; font-size:11px;" data-action="start-quick-match" data-sim="0">▶ START MATCH</button>
+          
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 2. LIVE MATCH HUD (#view-match) ==================== -->
+  <section id="view-match" class="view">
+    <div class="match-topbar">
+      <div class="score-bug">
+        <div id="hud-bat-shield"></div>
+        <div>
+          <div style="display:flex; align-items:baseline; gap:4px;">
+            <span id="hud-bat-code" style="font-weight:900; font-size:clamp(10.5px, 1.55vh, 12.5px); color:#fff;">IND</span>
+            <span id="hud-score" class="score-main-num">0/0</span>
+            <span id="hud-overs" class="score-overs">(0.0)</span>
+          </div>
+          <div id="hud-crr" style="font-size:clamp(8px, 1.15vh, 9px); color:var(--text-muted); font-weight:700;">CRR: 0.00 • BALANCED</div>
+        </div>
+      </div>
+
+      <div class="match-status-strip">
+        <span id="hud-target-pill" class="status-tag">1ST INNINGS</span>
+        <span id="hud-test-pill" class="status-tag hidden" style="background:rgba(250,204,21,0.16); border-color:rgba(250,204,21,0.45); color:#fde047;">DAY 1 • 90.0 OV</span>
+        <span id="hud-pvp-pill" class="status-tag hidden" style="background:rgba(168,85,247,0.2); border-color:rgba(168,85,247,0.5); color:#e9d5ff;">PVP LIVE</span>
+        <span id="hud-speaking-pill" class="speaking-pill hidden">🎙️ SPEAKING</span>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:4px;">
+        <button type="button" class="btn btn-xs hidden" id="btn-hud-voice" data-action="pvp-toggle-mic">🎙️ VOICE: OFF</button>
+        <button type="button" class="btn btn-xs hidden" id="btn-declare" style="border-color:var(--gold); color:var(--gold);" data-action="declare-innings">DECLARE</button>
+        
+        <button type="button" class="btn btn-xs" data-action="open-scorecard">📋 CARD</button>
+        <button type="button" class="btn btn-xs" data-action="confirm-exit-match">🏠 EXIT</button>
+      </div>
+    </div>
+
+    <div class="match-grid">
+      <!-- LEFT SIDEBAR -->
+      <aside id="left-sidebar" class="hud-col">
+        <div class="broadcast-card" style="flex-shrink:0;">
+          <div class="card-title-row">
+            <span>10-STAR FIELDING</span>
+            <button type="button" class="btn btn-xs btn-cyan" id="btn-view-field" data-action="open-fielding-modal">👁️ VIEW FIELD</button>
+          </div>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <svg viewBox="0 0 80 80" style="width:40px; height:40px; border-radius:50%; background:radial-gradient(circle, #1f7a3f 0%, #092715 100%); border:1.5px solid rgba(255,255,255,0.45); flex-shrink:0;" data-action="open-fielding-modal">
+              <circle cx="40" cy="40" r="22" fill="none" stroke="#facc15" stroke-width="1.2" stroke-dasharray="2.5,2"/>
+              <rect x="37.5" y="31" width="5" height="18" rx="1" fill="#e7cfa8"/>
+              <g id="mini-svg-fielders"></g>
+            </svg>
+            <div style="flex:1; min-width:0;">
+              <div class="field-left-stats">
+                <span style="color:var(--gold);">IN: <span id="left-in-stars">6</span>★</span>
+                <span style="color:var(--cyan);">OUT: <span id="left-out-stars">4</span>★</span>
+              </div>
+              <div class="star-strip" id="left-star-strip"></div>
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:2px;">
+                <div style="display:flex; gap:2px;">
+                  <button type="button" class="btn btn-xs" style="padding:2px 4px;" id="btn-field-dec" data-action="adjust-field-delta" data-delta="-1">-1</button>
+                  <button type="button" class="btn btn-xs btn-gold" style="padding:2px 4px;" id="btn-field-inc" data-action="adjust-field-delta" data-delta="1">+1</button>
+                </div>
+                <div class="field-preset-row" id="left-field-presets" style="flex:1;"><button type="button" class="btn btn-xs" style="padding:2px 1px;" data-action="set-field-plan" data-plan="ATTACK">ATK</button><button type="button" class="btn btn-xs" style="padding:2px 1px;" data-action="set-field-plan" data-plan="POWERPLAY">PP</button><button type="button" class="btn btn-xs" style="padding:2px 1px;" data-action="set-field-plan" data-plan="BALANCED">BAL</button><button type="button" class="btn btn-xs" style="padding:2px 1px;" data-action="set-field-plan" data-plan="DEFENSIVE">DEF</button><button type="button" class="btn btn-xs" style="padding:2px 1px;" data-action="set-field-plan" data-plan="DEATH">DTH</button><button type="button" class="btn btn-xs" style="padding:2px 1px;" data-action="set-field-plan" data-plan="SPINTRAP">SPN</button><button type="button" class="btn btn-xs" style="padding:2px 1px;" data-action="set-field-plan" data-plan="SLIPS">SLP</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="broadcast-card" style="flex:1; justify-content:space-between;">
+          <div style="min-height:0; overflow:hidden;">
+            <div class="card-title-row">
+              <span>BATTERS</span>
+              <span id="hud-partnership-side" style="color:var(--emerald);">P'SHIP 0 (0)</span>
+            </div>
+            <div id="hud-batters-box" style="display:flex; flex-direction:column; gap:3px;"></div>
+          </div>
+
+          <div style="margin-top:2px; flex-shrink:0;">
+            <div class="card-title-row">
+              <span>BOWLER</span>
+              <button type="button" class="btn btn-xs btn-cyan" id="btn-switch-bowler" data-action="switch-bowler-trigger">SWITCH BOWLER</button>
+            </div>
+            <div id="hud-bowler-box"></div>
+            <div id="hud-bowler-queue-badge" class="hidden" style="margin-top:2px; background:rgba(250,204,21,0.16); border:1px solid var(--gold); color:#fde047; font-size:8.5px; font-weight:800; padding:2px 5px; border-radius:4px; text-align:center;">
+              ⏳ BOWLER SWITCH AT OVER END
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- CENTER STAGE -->
+      <main id="center-stage" class="center-stage">
+        <div id="broadcast-event-banner" class="broadcast-event-banner banner-six">SIX! MAXIMUM</div>
+
+        <div class="numeric-hero-box" id="numeric-hero-box">
+          <div class="hero-over-stamp" id="hero-over-stamp">0.0 OV • READY</div>
+          <div class="hero-big-number" id="hero-big-number">-</div>
+          <div class="hero-word-tag" id="hero-word-tag">READY</div>
+          <div class="hero-short-line" id="hero-short-line">Select shot to begin</div>
+        </div>
+
+        <div class="this-over-strip">
+          <span style="font-size:clamp(8.5px, 1.25vh, 9.5px); font-weight:900; color:var(--text-muted); letter-spacing:0.05em;">THIS OVER:</span>
+          <div class="ball-bubbles" id="hud-this-over"></div>
+        </div>
+
+        <div class="recent-overs-box">
+          <div class="card-title-row" style="margin-bottom:2px;">
+            <span>RECENT BALLS BY OVER</span>
+            <span id="center-role-badge" style="color:var(--emerald);">LIVE</span>
+          </div>
+          <div class="recent-overs-list" id="recent-overs-list"></div>
+        </div>
+      </main>
+
+      <!-- RIGHT CONTROLS -->
+      <aside id="right-controls" class="hud-col">
+        <div class="broadcast-card" style="flex:1;">
+          <div class="card-title-row">
+            <span id="shot-panel-header">BATTING SHOTS</span>
+            <span id="repeat-penalty-badge" class="hidden" style="color:var(--crimson);">+5.0% REPEAT</span>
+          </div>
+
+          <div id="pvp-bowler-pause-banner" class="pvp-lock-banner hidden">
+            WAITING FOR BOWLER SELECTION...
+          </div>
+
+          <div class="shot-grid" id="shot-buttons-grid">
+            <button type="button" class="shot-card shot-stop" data-action="play-shot" data-shot="STOP" id="btn-shot-STOP">
+              <div class="shot-title-top" style="color:#f8fafc;">STOP</div>
+              <div class="shot-meter-wrap">
+                <div class="shot-meter-labels">
+                  <span style="color:var(--gold);" id="safe-pct-STOP">SAFE 97.5%</span>
+                  <span style="color:#fca5a5;" id="risk-pct-STOP">OUT 2.5%</span>
+                </div>
+                <div class="shot-dual-bar">
+                  <div class="shot-bar-safe" id="bar-safe-STOP" style="width:97.5%;"></div>
+                  <div class="shot-bar-out" id="bar-out-STOP" style="width:2.5%;"></div>
+                </div>
+              </div>
+              <div class="shot-eye-big" id="eye-big-STOP">+6.8% EYE</div>
+              <div class="shot-out-center" id="out-prob-STOP">OUT 2.5%</div>
+              <div class="run-chips-row" id="runs-prob-STOP"></div>
+            </button>
+
+            <button type="button" class="shot-card shot-push" data-action="play-shot" data-shot="PUSH" id="btn-shot-PUSH">
+              <div class="shot-title-top" style="color:#6ee7b7;">PUSH</div>
+              <div class="shot-meter-wrap">
+                <div class="shot-meter-labels">
+                  <span style="color:var(--gold);" id="safe-pct-PUSH">SAFE 94.5%</span>
+                  <span style="color:#fca5a5;" id="risk-pct-PUSH">OUT 5.5%</span>
+                </div>
+                <div class="shot-dual-bar">
+                  <div class="shot-bar-safe" id="bar-safe-PUSH" style="width:94.5%;"></div>
+                  <div class="shot-bar-out" id="bar-out-PUSH" style="width:5.5%;"></div>
+                </div>
+              </div>
+              <div class="shot-eye-big" id="eye-big-PUSH">+3.9% EYE</div>
+              <div class="shot-out-center" id="out-prob-PUSH">OUT 5.5%</div>
+              <div class="run-chips-row" id="runs-prob-PUSH"></div>
+            </button>
+
+            <button type="button" class="shot-card shot-smash" data-action="play-shot" data-shot="SMASH" id="btn-shot-SMASH">
+              <div class="shot-title-top" style="color:#7dd3fc;">SMASH</div>
+              <div class="shot-meter-wrap">
+                <div class="shot-meter-labels">
+                  <span style="color:var(--gold);" id="safe-pct-SMASH">SAFE 86.5%</span>
+                  <span style="color:#fca5a5;" id="risk-pct-SMASH">OUT 13.5%</span>
+                </div>
+                <div class="shot-dual-bar">
+                  <div class="shot-bar-safe" id="bar-safe-SMASH" style="width:86.5%;"></div>
+                  <div class="shot-bar-out" id="bar-out-SMASH" style="width:13.5%;"></div>
+                </div>
+              </div>
+              <div class="shot-eye-big eye-drain" id="eye-big-SMASH">-10% EYE</div>
+              <div class="shot-out-center" id="out-prob-SMASH">OUT 13.5%</div>
+              <div class="run-chips-row" id="runs-prob-SMASH"></div>
+            </button>
+
+            <button type="button" class="shot-card shot-loft" data-action="play-shot" data-shot="LOFT" id="btn-shot-LOFT">
+              <div class="shot-title-top" style="color:var(--gold);">LOFT</div>
+              <div class="shot-meter-wrap">
+                <div class="shot-meter-labels">
+                  <span style="color:var(--gold);" id="safe-pct-LOFT">SAFE 73.0%</span>
+                  <span style="color:#fca5a5;" id="risk-pct-LOFT">OUT 27.0%</span>
+                </div>
+                <div class="shot-dual-bar">
+                  <div class="shot-bar-safe" id="bar-safe-LOFT" style="width:73.0%;"></div>
+                  <div class="shot-bar-out" id="bar-out-LOFT" style="width:27.0%;"></div>
+                </div>
+              </div>
+              <div class="shot-eye-big eye-drain" id="eye-big-LOFT">-25% EYE</div>
+              <div class="shot-out-center" id="out-prob-LOFT">OUT 27.0%</div>
+              <div class="run-chips-row" id="runs-prob-LOFT"></div>
+            </button>
+          </div>
+
+          
+
+          <div id="pvp-bowling-panel" class="hidden" style="flex:1; flex-direction:column; justify-content:space-between; gap:6px; padding-top:4px;">
+            <div style="background:rgba(15,23,42,0.85); border:1px solid var(--border-subtle); border-radius:8px; padding:8px; display:flex; flex-direction:column; gap:5px;">
+              <div style="font-size:9.5px; font-weight:800; color:var(--cyan);">ONLINE PVP BOWLING CONTROL</div>
+              <div id="pvp-bowl-field-readout" style="font-family:var(--font-mono); font-size:11.5px; font-weight:900; color:var(--gold);">IN CIRCLE: 6★ • OUTSIDE: 4★</div>
+              <div id="pvp-bowl-spell-readout" style="font-size:10.5px; color:#e2e8f0;">Active Bowler Spell</div>
+            </div>
+            <button type="button" class="btn btn-cyan" style="padding:9px; width:100%;" id="btn-pvp-switch-next" data-action="switch-bowler-trigger">
+              ⚾ SWITCH BOWLER (NEXT OVER)
+            </button>
+            <button type="button" class="btn btn-gold" style="padding:8px; width:100%;" data-action="open-fielding-modal">
+              🎯 OPEN FIELD RADAR &amp; ODDS
+            </button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ==================== 3. T20 WORLD CUP 2026 (#view-wc) ==================== -->
+  
+
+  <!-- ==================== 4. BILATERAL SERIES (#view-series) ==================== -->
+  
+
+  <!-- ==================== 5. ONLINE PVP & VOICE LOBBY (#view-pvp) ==================== -->
+  <section id="view-pvp" class="view">
+    <header class="broadcast-header">
+      <div class="brand-badge"><span>📡 ONLINE PVP &amp; <span style="color:var(--purple);">VOICE CHAT</span></span></div>
+      <div style="display:flex; gap:6px;">
+        <button type="button" class="btn btn-gold" data-action="open-squad-modal" data-team="p1">👥 SQUAD SWAP</button>
+        <button type="button" class="btn" data-action="go-home">🏠 HOME</button>
+      </div>
+    </header>
+
+    <div class="subscreen-body" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+      <div class="broadcast-card" style="justify-content:space-between; gap:8px;">
+        <div>
+          <div class="card-title-row"><span>HOST 5-DIGIT ROOM</span><span style="color:var(--emerald);">LIVE SYNC</span></div>
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:5px; margin-bottom:8px;">
+            <select id="pvp-host-team" class="team-select"></select>
+            <select id="pvp-host-fmt" class="team-select">
+              <option value="T20">T20 (20 Ov)</option>
+              <option value="ODI">ODI (50 Ov)</option>
+              <option value="TEST">TEST 5D</option>
+            </select>
+            <select id="pvp-host-pitch" class="team-select">
+              <option value="BALANCED">BALANCED</option>
+              <option value="FLAT">FLAT</option>
+              <option value="GREEN">GREEN</option>
+              <option value="DUSTY">DUSTY</option>
+            </select>
+          </div>
+          <button type="button" class="btn btn-emerald" style="width:100%;" data-action="pvp-create-room">📡 CREATE 5-DIGIT CODE</button>
+        </div>
+        <div style="background:#080e18; border:1px dashed rgba(250,204,21,0.4); border-radius:9px; padding:8px; text-align:center;">
+          <div style="font-size:9px; color:var(--text-muted);">ROOM CODE</div>
+          <div id="pvp-room-code-display" style="font-family:var(--font-mono); font-size:22px; font-weight:900; color:var(--gold); letter-spacing:0.16em;">-----</div>
+          <div id="pvp-conn-msg" style="font-size:10px; color:var(--cyan); margin-top:2px;">Ready to host or join</div>
+        </div>
+      </div>
+
+      <div class="broadcast-card" style="justify-content:space-between; gap:8px;">
+        <div>
+          <div class="card-title-row"><span>JOIN ROOM</span><span style="color:var(--purple);">OPPONENT XI</span></div>
+          <div style="display:flex; gap:6px; margin-bottom:8px;">
+            <input id="pvp-join-input" type="text" maxlength="5" placeholder="5-DIGIT CODE" style="flex:1; background:#17253b; border:1px solid var(--gold); border-radius:7px; color:#fff; font-family:var(--font-mono); font-size:14px; font-weight:900; text-align:center; letter-spacing:0.14em; padding:5px;">
+            <select id="pvp-join-team" class="team-select" style="width:120px;"></select>
+            <button type="button" class="btn btn-xs btn-gold" data-action="open-squad-modal" data-team="p2">XI</button>
+          </div>
+          <button type="button" class="btn btn-cyan" style="width:100%;" data-action="pvp-join-room">🔗 JOIN PVP ROOM</button>
+        </div>
+        <div style="background:rgba(168,85,247,0.12); border:1px solid rgba(168,85,247,0.35); border-radius:9px; padding:8px; display:flex; align-items:center; justify-content:space-between;">
+          <div>
+            <div style="font-size:10px; font-weight:800; color:#e9d5ff;">🎙️ OPT-IN VOICE CHAT</div>
+            <div id="pvp-voice-status" style="font-size:9px; color:var(--text-muted);">Voice off • Standby</div>
+          </div>
+          <button type="button" class="btn btn-xs" id="btn-pvp-mic" data-action="pvp-toggle-mic">🎙️ VOICE: OFF</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== POP-UP MODALS ==================== -->
+
+  <!-- MODAL A: INTERACTIVE FIELDING RADAR POP-UP (#modal-field) -->
+  <div id="modal-field" class="modal-backdrop">
+    <div class="modal-box" style="max-width: 780px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-weight:900; font-size:12.5px;">🎯 FIELDING RADAR &amp; LIVE SHOT ODDS (10 STARS = 10 FIELDERS)</span>
+          <span id="modal-field-readonly-badge" class="status-tag hidden" style="background:rgba(56,189,248,0.2); border-color:var(--cyan); color:#7dd3fc;">VIEW ONLY</span>
+        </div>
+        <button type="button" class="btn btn-xs" data-action="close-modal" data-modal="modal-field">✕ CLOSE</button>
+      </div>
+      <div class="modal-body">
+        <div class="field-modal-grid">
+          <div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
+            <svg viewBox="0 0 260 260" style="width:205px; height:205px; border-radius:50%; background:radial-gradient(circle, #1f7a3f 0%, #14532d 68%, #092715 100%); border:3px solid #f8fafc;">
+              <circle cx="130" cy="130" r="126" fill="transparent" data-action="field-ring-out"/>
+              <circle cx="130" cy="130" r="74" fill="rgba(250, 204, 21, 0.08)" stroke="#facc15" stroke-width="2" stroke-dasharray="5,4" data-action="field-ring-in"/>
+              <rect x="122" y="102" width="16" height="56" rx="2" fill="#e7cfa8" stroke="#a16207" stroke-width="1"/>
+              <text x="130" y="68" text-anchor="middle" fill="#fde047" font-size="8" font-weight="800" pointer-events="none">30-YD INNER CIRCLE</text>
+              <text x="130" y="17" text-anchor="middle" fill="#7dd3fc" font-size="8" font-weight="800" pointer-events="none">OUTSIDE BOUNDARY</text>
+              <g id="modal-svg-fielders"></g>
+            </svg>
+            <div style="font-size:9.5px; color:var(--text-muted); text-align:center;">
+              Tap <strong style="color:var(--gold);">Inside 30-Yd Ring</strong> or <strong style="color:var(--cyan);">Outside Ring</strong> to move fielders.
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:7px;">
+            <div style="background:rgba(15,23,42,0.85); border:1px solid var(--border-subtle); border-radius:8px; padding:6px 9px; display:flex; align-items:center; justify-content:space-between;">
+              <div id="modal-field-summary" style="font-size:13px; font-weight:900; color:var(--gold);">IN CIRCLE: 6★ • OUTSIDE: 4★</div>
+              <div id="modal-field-step-btns" style="display:flex; gap:5px;">
+                <button type="button" class="btn btn-xs" data-action="adjust-field-delta" data-delta="-1">-1 IN</button>
+                <button type="button" class="btn btn-xs btn-gold" data-action="adjust-field-delta" data-delta="1">+1 IN</button>
+              </div>
+            </div>
+
+            <div id="modal-stars-row" style="display:flex; justify-content:space-between; gap:3px; background:#09111e; padding:5px 7px; border-radius:7px; border:1px solid var(--border-subtle);"></div>
+
+            <div id="modal-field-presets" style="display:flex; gap:4px; flex-wrap:wrap;"><button type="button" class="btn btn-xs"  data-action="set-field-plan" data-plan="ATTACK">⚔ ATTACK</button><button type="button" class="btn btn-xs"  data-action="set-field-plan" data-plan="POWERPLAY">⚡ POWERPLAY</button><button type="button" class="btn btn-xs"  data-action="set-field-plan" data-plan="BALANCED">⚖ BALANCED</button><button type="button" class="btn btn-xs"  data-action="set-field-plan" data-plan="DEFENSIVE">🛡 DEFENSIVE</button><button type="button" class="btn btn-xs"  data-action="set-field-plan" data-plan="DEATH">🎯 DEATH</button><button type="button" class="btn btn-xs"  data-action="set-field-plan" data-plan="SPINTRAP">🌀 SPIN TRAP</button><button type="button" class="btn btn-xs"  data-action="set-field-plan" data-plan="SLIPS">🧤 SLIP CORDON</button></div>
+
+            <div style="background:#080e18; border:1px solid var(--border-subtle); border-radius:8px; overflow:hidden;">
+              <table class="prob-table" id="modal-prob-table"></table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL B: TWO-PANEL SQUAD SWAP MODAL (#modal-squad) -->
+  <div id="modal-squad" class="modal-backdrop">
+    <div class="modal-box" style="max-width: 860px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span style="font-weight:900; font-size:12.5px;">👥 SQUAD SELECTION (TAP TO SWAP)</span>
+          <button type="button" class="btn btn-xs btn-gold" id="tab-squad-p1" data-action="switch-squad-tab" data-side="p1">PLAYER 1 XI</button>
+          <button type="button" class="btn btn-xs" id="tab-squad-p2" data-action="switch-squad-tab" data-side="p2">PLAYER 2 XI</button>
+        </div>
+        <div style="display:flex; align-items:center; gap:5px;">
+          <span id="squad-quota-badge" class="status-tag">BOWL/AR: 6/5 MIN</span>
+          <button type="button" class="btn btn-xs btn-cyan" data-action="auto-optimize-squad">✨ AUTO XI</button>
+          <button type="button" class="btn btn-xs btn-emerald" data-action="close-modal" data-modal="modal-squad">✓ DONE</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div style="background:rgba(250,204,21,0.12); border:1px solid rgba(250,204,21,0.35); border-radius:7px; padding:4px 9px; margin-bottom:7px; font-size:10.5px; font-weight:700; color:#fef08a; display:flex; justify-content:space-between; align-items:center;">
+          <span id="swap-status-text">Tap any player to select, then tap another player to swap positions!</span>
+          <button type="button" class="btn btn-xs hidden" id="btn-cancel-swap" data-action="cancel-swap-select">CANCEL</button>
+        </div>
+        <div class="squad-swap-grid">
+          <div>
+            <div class="card-title-row"><span>PLAYING XI (#1–#11)</span><span style="color:var(--gold);">BATTING ORDER</span></div>
+            <div class="squad-list-panel" id="squad-xi-list"></div>
+          </div>
+          <div>
+            <div class="card-title-row"><span>BENCH RESERVES (#12–#15)</span><span style="color:var(--cyan);">SUBS</span></div>
+            <div class="squad-list-panel" id="squad-bench-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL C: COIN TOSS POP-UP (#modal-toss) -->
+  <div id="modal-toss" class="modal-backdrop">
+    <div class="modal-box" style="max-width: 430px; text-align:center;">
+      <div class="modal-header">
+        <span style="font-weight:900; font-size:12.5px;">🪙 OFFICIAL COIN TOSS</span>
+        <span id="toss-pitch-tag" class="status-tag">BALANCED</span>
+      </div>
+      <div class="modal-body" style="display:flex; flex-direction:column; align-items:center; gap:10px; padding:14px;">
+        <div style="display:flex; align-items:center; justify-content:center; gap:18px;">
+          <div id="toss-p1-badge"></div>
+          <div style="width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg, #fde047, #b45309); border:3px solid #fef9c3; display:flex; align-items:center; justify-content:center; font-size:22px;">🪙</div>
+          <div id="toss-p2-badge"></div>
+        </div>
+        <div id="toss-prompt-text" style="font-size:12.5px; font-weight:800;">Call Heads or Tails!</div>
+        <div id="toss-call-btns" style="display:flex; gap:10px;">
+          <button type="button" class="btn btn-gold" data-action="call-toss" data-call="HEADS">CALL HEADS</button>
+          <button type="button" class="btn btn-cyan" data-action="call-toss" data-call="TAILS">CALL TAILS</button>
+        </div>
+        <div id="toss-choice-btns" class="hidden" style="flex-direction:column; gap:8px; width:100%;">
+          <div id="toss-result-msg" style="font-size:12px; font-weight:800; color:var(--emerald);"></div>
+          <div style="display:flex; gap:10px; justify-content:center;">
+            <button type="button" class="btn btn-emerald" data-action="choose-toss-decision" data-decision="BAT">🏏 BAT FIRST</button>
+            <button type="button" class="btn btn-gold" data-action="choose-toss-decision" data-decision="BOWL">⚾ BOWL FIRST</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL D: BOWLER SELECTION POP-UP (#modal-bowler) -->
+  <div id="modal-bowler" class="modal-backdrop">
+    <div class="modal-box" style="max-width: 520px;">
+      <div class="modal-header">
+        <span style="font-weight:900; font-size:12.5px;">⚾ SELECT BOWLER</span>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span id="bowler-quota-info" class="status-tag">MAX 4 OV</span>
+          <button type="button" class="btn btn-xs" id="btn-close-bowler-modal" data-action="close-modal" data-modal="modal-bowler">✕</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:10px; color:var(--text-muted); margin-bottom:6px;">
+          Consecutive overs prohibited. Select an eligible bowler for the next over.
+        </p>
+        <div id="bowler-options-list" style="display:flex; flex-direction:column; gap:5px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL E: FULL SCORECARD POP-UP (#modal-scorecard) -->
+  <div id="modal-scorecard" class="modal-backdrop">
+    <div class="modal-box" style="max-width: 780px;">
+      <div class="modal-header">
+        <span style="font-weight:900; font-size:12.5px;" id="sc-modal-title">📋 MATCH SCORECARD</span>
+        <div style="display:flex; gap:5px;" id="sc-innings-tabs"></div>
+        <button type="button" class="btn btn-xs" data-action="close-modal" data-modal="modal-scorecard">✕ CLOSE</button>
+      </div>
+      <div class="modal-body" id="sc-modal-body"></div>
+      <div class="modal-footer" id="sc-modal-footer">
+        <button type="button" class="btn btn-emerald" data-action="close-modal" data-modal="modal-scorecard">CONTINUE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL F: BROADCAST DIALOG (#modal-dialog) -->
+  <div id="modal-dialog" class="modal-backdrop">
+    <div class="modal-box" style="max-width: 440px; text-align:center;">
+      <div class="modal-header">
+        <span id="dlg-title" style="font-weight:900; font-size:12.5px; color:var(--gold);">MATCH UPDATE</span>
+      </div>
+      <div class="modal-body" style="padding:14px;">
+        <p id="dlg-body" style="font-size:12px; color:#e2e8f0; line-height:1.4; margin-bottom:12px;"></p>
+        <div id="dlg-actions" style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  /* ============================================================================
+     1. STYLE CONFIG & 10-NATION 150-PLAYER DATABASE (+50% BASE POWER)
+     ============================================================================ */
+  const STYLE_CONFIG = {
+    'ANCHOR': {
+      STOP:  { base: 2.5, floor: 0.6 },
+      PUSH:  { base: 5.5, floor: 1.5 },
+      SMASH: { base: 14.0, floor: 7.0 },
+      LOFT:  { base: 28.0, floor: 15.0 }
+    },
+    'STROKE MAKER': {
+      STOP:  { base: 3.2, floor: 0.9 },
+      PUSH:  { base: 6.5, floor: 2.0 },
+      SMASH: { base: 13.5, floor: 7.0 },
+      LOFT:  { base: 27.0, floor: 15.0 }
+    },
+    'POWER HITTER': {
+      STOP:  { base: 4.5, floor: 1.2 },
+      PUSH:  { base: 8.5, floor: 2.5 },
+      SMASH: { base: 12.0, floor: 7.0 },
+      LOFT:  { base: 23.0, floor: 15.0 }
+    },
+    'ALL-ROUNDER': {
+      STOP:  { base: 3.8, floor: 1.1 },
+      PUSH:  { base: 7.2, floor: 2.2 },
+      SMASH: { base: 15.0, floor: 7.0 },
+      LOFT:  { base: 29.0, floor: 15.0 }
+    },
+    'TAILENDER': {
+      STOP:  { base: 8.0, floor: 3.5 },
+      PUSH:  { base: 15.0, floor: 7.5 },
+      SMASH: { base: 21.0, floor: 11.0 },
+      LOFT:  { base: 35.0, floor: 20.0 }
+    }
+  };
+
+  function getPlayerEyeRates(player) {
+    const style = (player && STYLE_CONFIG[player.style]) ? player.style : 'STROKE MAKER';
+    const rawPwr = player && typeof player.pwr === 'number' ? player.pwr : 78;
+    const pwr = rawPwr > 100 ? rawPwr : Math.min(147, Math.round(rawPwr * 1.5));
+    const loftStart = STYLE_CONFIG[style].LOFT.base;
+    const gainMult = 45 / Math.max(25, loftStart - 15);
+    return {
+      style,
+      pwr,
+      stopGain: Number((6.0 * gainMult).toFixed(1)),
+      pushGainRuns: Number((3.5 * gainMult).toFixed(1)),
+      pushGainDot: Number((1.5 * gainMult).toFixed(1)),
+      smashDrain: 10,
+      loftDrain: 25
+    };
+  }
+
+  const TEAMS = {
+    IND: {
+      name: 'India', code: 'IND', primary: '#1d4ed8', secondary: '#f97316',
+      players: [
+        { name: 'Rohit Sharma', role: 'BAT', bat: 92, bowl: 18, style: 'POWER HITTER', pwr: 91, weak: 'PACE', cap: true },
+        { name: 'Yashasvi Jaiswal', role: 'BAT', bat: 89, bowl: 15, style: 'STROKE MAKER', pwr: 85, weak: 'PACE' },
+        { name: 'Virat Kohli', role: 'BAT', bat: 95, bowl: 14, style: 'ANCHOR', pwr: 78, weak: 'SPIN' },
+        { name: 'Suryakumar Yadav', role: 'BAT', bat: 93, bowl: 12, style: 'POWER HITTER', pwr: 93, weak: 'NONE' },
+        { name: 'Rishabh Pant', role: 'WK', bat: 88, bowl: 10, style: 'POWER HITTER', pwr: 90, weak: 'SPIN', wk: true },
+        { name: 'Hardik Pandya', role: 'AR', bat: 86, bowl: 82, style: 'POWER HITTER', pwr: 92, weak: 'NONE', bowlType: 'PACE' },
+        { name: 'Ravindra Jadeja', role: 'AR', bat: 80, bowl: 86, style: 'ALL-ROUNDER', pwr: 76, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Axar Patel', role: 'AR', bat: 77, bowl: 85, style: 'ALL-ROUNDER', pwr: 75, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Kuldeep Yadav', role: 'BOWL', bat: 34, bowl: 90, style: 'TAILENDER', pwr: 44, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Jasprit Bumrah', role: 'BOWL', bat: 32, bowl: 97, style: 'TAILENDER', pwr: 46, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Arshdeep Singh', role: 'BOWL', bat: 26, bowl: 88, style: 'TAILENDER', pwr: 40, weak: 'PACE', bowlType: 'PACE' },
+        { name: 'Shubman Gill', role: 'BAT', bat: 90, bowl: 14, style: 'STROKE MAKER', pwr: 80, weak: 'SPIN' },
+        { name: 'KL Rahul', role: 'WK', bat: 87, bowl: 10, style: 'ANCHOR', pwr: 77, weak: 'PACE', wk: true },
+        { name: 'Mohammed Siraj', role: 'BOWL', bat: 28, bowl: 87, style: 'TAILENDER', pwr: 42, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Sanju Samson', role: 'WK', bat: 85, bowl: 10, style: 'POWER HITTER', pwr: 88, weak: 'SPIN', wk: true }
+      ]
+    },
+    AUS: {
+      name: 'Australia', code: 'AUS', primary: '#eab308', secondary: '#15803d',
+      players: [
+        { name: 'Travis Head', role: 'BAT', bat: 93, bowl: 45, style: 'POWER HITTER', pwr: 94, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Mitchell Marsh', role: 'AR', bat: 87, bowl: 74, style: 'POWER HITTER', pwr: 91, weak: 'SPIN', cap: true, bowlType: 'PACE' },
+        { name: 'Steve Smith', role: 'BAT', bat: 91, bowl: 28, style: 'ANCHOR', pwr: 73, weak: 'PACE' },
+        { name: 'Marnus Labuschagne', role: 'BAT', bat: 86, bowl: 38, style: 'ANCHOR', pwr: 70, weak: 'PACE' },
+        { name: 'Glenn Maxwell', role: 'AR', bat: 89, bowl: 78, style: 'POWER HITTER', pwr: 96, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Marcus Stoinis', role: 'AR', bat: 84, bowl: 77, style: 'POWER HITTER', pwr: 89, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Josh Inglis', role: 'WK', bat: 83, bowl: 10, style: 'STROKE MAKER', pwr: 82, weak: 'SPIN', wk: true },
+        { name: 'Pat Cummins', role: 'BOWL', bat: 56, bowl: 93, style: 'TAILENDER', pwr: 62, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Mitchell Starc', role: 'BOWL', bat: 48, bowl: 92, style: 'TAILENDER', pwr: 58, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Adam Zampa', role: 'BOWL', bat: 28, bowl: 90, style: 'TAILENDER', pwr: 40, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Josh Hazlewood', role: 'BOWL', bat: 26, bowl: 92, style: 'TAILENDER', pwr: 38, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Tim David', role: 'BAT', bat: 84, bowl: 22, style: 'POWER HITTER', pwr: 95, weak: 'SPIN' },
+        { name: 'Alex Carey', role: 'WK', bat: 81, bowl: 10, style: 'ANCHOR', pwr: 74, weak: 'PACE', wk: true },
+        { name: 'Cameron Green', role: 'AR', bat: 84, bowl: 80, style: 'ALL-ROUNDER', pwr: 84, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Nathan Ellis', role: 'BOWL', bat: 34, bowl: 86, style: 'TAILENDER', pwr: 45, weak: 'SPIN', bowlType: 'PACE' }
+      ]
+    },
+    ENG: {
+      name: 'England', code: 'ENG', primary: '#1e3a8a', secondary: '#dc2626',
+      players: [
+        { name: 'Phil Salt', role: 'WK', bat: 88, bowl: 10, style: 'POWER HITTER', pwr: 91, weak: 'SPIN', wk: true },
+        { name: 'Jos Buttler', role: 'WK', bat: 92, bowl: 10, style: 'POWER HITTER', pwr: 93, weak: 'SPIN', cap: true, wk: true },
+        { name: 'Will Jacks', role: 'AR', bat: 85, bowl: 72, style: 'POWER HITTER', pwr: 89, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Joe Root', role: 'BAT', bat: 92, bowl: 52, style: 'ANCHOR', pwr: 72, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Harry Brook', role: 'BAT', bat: 90, bowl: 18, style: 'STROKE MAKER', pwr: 87, weak: 'SPIN' },
+        { name: 'Liam Livingstone', role: 'AR', bat: 84, bowl: 76, style: 'POWER HITTER', pwr: 94, weak: 'SPIN', bowlType: 'SPIN' },
+        { name: 'Ben Stokes', role: 'AR', bat: 87, bowl: 82, style: 'ALL-ROUNDER', pwr: 85, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Sam Curran', role: 'AR', bat: 76, bowl: 83, style: 'ALL-ROUNDER', pwr: 78, weak: 'PACE', bowlType: 'PACE' },
+        { name: 'Jofra Archer', role: 'BOWL', bat: 44, bowl: 91, style: 'TAILENDER', pwr: 58, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Adil Rashid', role: 'BOWL', bat: 42, bowl: 90, style: 'TAILENDER', pwr: 50, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Mark Wood', role: 'BOWL', bat: 34, bowl: 89, style: 'TAILENDER', pwr: 52, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Ben Duckett', role: 'BAT', bat: 86, bowl: 10, style: 'STROKE MAKER', pwr: 79, weak: 'PACE' },
+        { name: 'Jonny Bairstow', role: 'WK', bat: 85, bowl: 10, style: 'POWER HITTER', pwr: 88, weak: 'PACE', wk: true },
+        { name: 'Reece Topley', role: 'BOWL', bat: 24, bowl: 85, style: 'TAILENDER', pwr: 38, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Gus Atkinson', role: 'BOWL', bat: 46, bowl: 86, style: 'TAILENDER', pwr: 55, weak: 'SPIN', bowlType: 'PACE' }
+      ]
+    },
+    PAK: {
+      name: 'Pakistan', code: 'PAK', primary: '#15803d', secondary: '#a3e635',
+      players: [
+        { name: 'Saim Ayub', role: 'BAT', bat: 85, bowl: 48, style: 'STROKE MAKER', pwr: 84, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Babar Azam', role: 'BAT', bat: 93, bowl: 14, style: 'ANCHOR', pwr: 75, weak: 'SPIN', cap: true },
+        { name: 'Mohammad Rizwan', role: 'WK', bat: 90, bowl: 10, style: 'ANCHOR', pwr: 76, weak: 'PACE', wk: true },
+        { name: 'Fakhar Zaman', role: 'BAT', bat: 86, bowl: 15, style: 'POWER HITTER', pwr: 89, weak: 'SPIN' },
+        { name: 'Salman Ali Agha', role: 'AR', bat: 82, bowl: 74, style: 'ALL-ROUNDER', pwr: 77, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Iftikhar Ahmed', role: 'AR', bat: 80, bowl: 70, style: 'POWER HITTER', pwr: 86, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Shadab Khan', role: 'AR', bat: 78, bowl: 84, style: 'ALL-ROUNDER', pwr: 81, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Shaheen Afridi', role: 'BOWL', bat: 46, bowl: 93, style: 'TAILENDER', pwr: 60, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Naseem Shah', role: 'BOWL', bat: 38, bowl: 90, style: 'TAILENDER', pwr: 50, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Haris Rauf', role: 'BOWL', bat: 26, bowl: 89, style: 'TAILENDER', pwr: 42, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Abrar Ahmed', role: 'BOWL', bat: 24, bowl: 87, style: 'TAILENDER', pwr: 36, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Saud Shakeel', role: 'BAT', bat: 85, bowl: 24, style: 'ANCHOR', pwr: 71, weak: 'PACE' },
+        { name: 'Abdullah Shafique', role: 'BAT', bat: 83, bowl: 12, style: 'ANCHOR', pwr: 73, weak: 'PACE' },
+        { name: 'Mohammad Wasim', role: 'BOWL', bat: 42, bowl: 84, style: 'TAILENDER', pwr: 54, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Usman Khan', role: 'WK', bat: 81, bowl: 10, style: 'STROKE MAKER', pwr: 82, weak: 'SPIN', wk: true }
+      ]
+    },
+    SA: {
+      name: 'South Africa', code: 'SA', primary: '#166534', secondary: '#facc15',
+      players: [
+        { name: 'Quinton de Kock', role: 'WK', bat: 90, bowl: 10, style: 'STROKE MAKER', pwr: 86, weak: 'SPIN', wk: true },
+        { name: 'Reeza Hendricks', role: 'BAT', bat: 83, bowl: 15, style: 'ANCHOR', pwr: 76, weak: 'SPIN' },
+        { name: 'Aiden Markram', role: 'AR', bat: 88, bowl: 74, style: 'STROKE MAKER', pwr: 83, weak: 'SPIN', cap: true, bowlType: 'SPIN' },
+        { name: 'Heinrich Klaasen', role: 'WK', bat: 94, bowl: 10, style: 'POWER HITTER', pwr: 97, weak: 'PACE', wk: true },
+        { name: 'David Miller', role: 'BAT', bat: 89, bowl: 12, style: 'POWER HITTER', pwr: 92, weak: 'SPIN' },
+        { name: 'Tristan Stubbs', role: 'BAT', bat: 86, bowl: 32, style: 'POWER HITTER', pwr: 90, weak: 'PACE' },
+        { name: 'Marco Jansen', role: 'AR', bat: 74, bowl: 87, style: 'ALL-ROUNDER', pwr: 80, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Keshav Maharaj', role: 'BOWL', bat: 46, bowl: 88, style: 'TAILENDER', pwr: 52, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Kagiso Rabada', role: 'BOWL', bat: 42, bowl: 94, style: 'TAILENDER', pwr: 54, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Anrich Nortje', role: 'BOWL', bat: 26, bowl: 90, style: 'TAILENDER', pwr: 40, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Tabraiz Shamsi', role: 'BOWL', bat: 22, bowl: 87, style: 'TAILENDER', pwr: 35, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Temba Bavuma', role: 'BAT', bat: 84, bowl: 12, style: 'ANCHOR', pwr: 71, weak: 'PACE' },
+        { name: 'Ryan Rickelton', role: 'WK', bat: 84, bowl: 10, style: 'STROKE MAKER', pwr: 82, weak: 'SPIN', wk: true },
+        { name: 'Gerald Coetzee', role: 'BOWL', bat: 44, bowl: 86, style: 'TAILENDER', pwr: 56, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Lungi Ngidi', role: 'BOWL', bat: 24, bowl: 86, style: 'TAILENDER', pwr: 38, weak: 'SPIN', bowlType: 'PACE' }
+      ]
+    },
+    NZ: {
+      name: 'New Zealand', code: 'NZ', primary: '#111827', secondary: '#9ca3af',
+      players: [
+        { name: 'Devon Conway', role: 'WK', bat: 88, bowl: 10, style: 'ANCHOR', pwr: 76, weak: 'PACE', wk: true },
+        { name: 'Rachin Ravindra', role: 'AR', bat: 89, bowl: 76, style: 'STROKE MAKER', pwr: 83, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Kane Williamson', role: 'BAT', bat: 93, bowl: 26, style: 'ANCHOR', pwr: 72, weak: 'PACE', cap: true },
+        { name: 'Daryl Mitchell', role: 'AR', bat: 88, bowl: 68, style: 'ALL-ROUNDER', pwr: 84, weak: 'PACE', bowlType: 'PACE' },
+        { name: 'Glenn Phillips', role: 'AR', bat: 86, bowl: 72, style: 'POWER HITTER', pwr: 91, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Mark Chapman', role: 'BAT', bat: 82, bowl: 24, style: 'POWER HITTER', pwr: 85, weak: 'PACE' },
+        { name: 'Mitchell Santner', role: 'AR', bat: 75, bowl: 88, style: 'ALL-ROUNDER', pwr: 76, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Matt Henry', role: 'BOWL', bat: 42, bowl: 90, style: 'TAILENDER', pwr: 52, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Lockie Ferguson', role: 'BOWL', bat: 32, bowl: 89, style: 'TAILENDER', pwr: 46, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Trent Boult', role: 'BOWL', bat: 36, bowl: 92, style: 'TAILENDER', pwr: 48, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Ish Sodhi', role: 'BOWL', bat: 30, bowl: 85, style: 'TAILENDER', pwr: 42, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Finn Allen', role: 'BAT', bat: 83, bowl: 10, style: 'POWER HITTER', pwr: 90, weak: 'SPIN' },
+        { name: 'Tom Latham', role: 'WK', bat: 85, bowl: 10, style: 'ANCHOR', pwr: 73, weak: 'PACE', wk: true },
+        { name: 'Tim Southee', role: 'BOWL', bat: 44, bowl: 87, style: 'TAILENDER', pwr: 54, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Will Young', role: 'BAT', bat: 82, bowl: 12, style: 'ANCHOR', pwr: 74, weak: 'SPIN' }
+      ]
+    },
+    WI: {
+      name: 'West Indies', code: 'WI', primary: '#7f1d1d', secondary: '#facc15',
+      players: [
+        { name: 'Brandon King', role: 'BAT', bat: 84, bowl: 10, style: 'STROKE MAKER', pwr: 82, weak: 'SPIN' },
+        { name: 'Johnson Charles', role: 'WK', bat: 81, bowl: 10, style: 'POWER HITTER', pwr: 87, weak: 'SPIN', wk: true },
+        { name: 'Nicholas Pooran', role: 'WK', bat: 92, bowl: 10, style: 'POWER HITTER', pwr: 95, weak: 'PACE', wk: true },
+        { name: 'Shai Hope', role: 'WK', bat: 87, bowl: 10, style: 'ANCHOR', pwr: 77, weak: 'SPIN', wk: true },
+        { name: 'Rovman Powell', role: 'BAT', bat: 85, bowl: 34, style: 'POWER HITTER', pwr: 93, weak: 'SPIN', cap: true },
+        { name: 'Andre Russell', role: 'AR', bat: 88, bowl: 84, style: 'POWER HITTER', pwr: 98, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Sherfane Rutherford', role: 'BAT', bat: 82, bowl: 28, style: 'POWER HITTER', pwr: 88, weak: 'SPIN' },
+        { name: 'Romario Shepherd', role: 'AR', bat: 76, bowl: 82, style: 'ALL-ROUNDER', pwr: 86, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Akeal Hosein', role: 'BOWL', bat: 48, bowl: 87, style: 'TAILENDER', pwr: 54, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Alzarri Joseph', role: 'BOWL', bat: 42, bowl: 88, style: 'TAILENDER', pwr: 56, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Gudakesh Motie', role: 'BOWL', bat: 36, bowl: 86, style: 'TAILENDER', pwr: 45, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Shimron Hetmyer', role: 'BAT', bat: 84, bowl: 10, style: 'POWER HITTER', pwr: 89, weak: 'SPIN' },
+        { name: 'Jason Holder', role: 'AR', bat: 75, bowl: 84, style: 'ALL-ROUNDER', pwr: 79, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Shamar Joseph', role: 'BOWL', bat: 34, bowl: 87, style: 'TAILENDER', pwr: 48, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Kyle Mayers', role: 'AR', bat: 80, bowl: 74, style: 'ALL-ROUNDER', pwr: 83, weak: 'SPIN', bowlType: 'PACE' }
+      ]
+    },
+    SL: {
+      name: 'Sri Lanka', code: 'SL', primary: '#1e40af', secondary: '#eab308',
+      players: [
+        { name: 'Pathum Nissanka', role: 'BAT', bat: 88, bowl: 12, style: 'STROKE MAKER', pwr: 81, weak: 'PACE' },
+        { name: 'Kusal Mendis', role: 'WK', bat: 85, bowl: 10, style: 'STROKE MAKER', pwr: 82, weak: 'PACE', wk: true },
+        { name: 'Kamindu Mendis', role: 'AR', bat: 86, bowl: 74, style: 'STROKE MAKER', pwr: 80, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Charith Asalanka', role: 'AR', bat: 85, bowl: 68, style: 'ALL-ROUNDER', pwr: 82, weak: 'PACE', cap: true, bowlType: 'SPIN' },
+        { name: 'Sadeera Samarawickrama', role: 'WK', bat: 81, bowl: 10, style: 'ANCHOR', pwr: 73, weak: 'PACE', wk: true },
+        { name: 'Angelo Mathews', role: 'AR', bat: 82, bowl: 75, style: 'ANCHOR', pwr: 76, weak: 'PACE', bowlType: 'PACE' },
+        { name: 'Wanindu Hasaranga', role: 'AR', bat: 76, bowl: 91, style: 'ALL-ROUNDER', pwr: 81, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Dasun Shanaka', role: 'AR', bat: 78, bowl: 74, style: 'POWER HITTER', pwr: 85, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Maheesh Theekshana', role: 'BOWL', bat: 34, bowl: 88, style: 'TAILENDER', pwr: 42, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Matheesha Pathirana', role: 'BOWL', bat: 20, bowl: 90, style: 'TAILENDER', pwr: 35, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Dilshan Madushanka', role: 'BOWL', bat: 24, bowl: 86, style: 'TAILENDER', pwr: 38, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Kusal Perera', role: 'WK', bat: 83, bowl: 10, style: 'POWER HITTER', pwr: 86, weak: 'SPIN', wk: true },
+        { name: 'Dunith Wellalage', role: 'AR', bat: 74, bowl: 83, style: 'ALL-ROUNDER', pwr: 72, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Dushmantha Chameera', role: 'BOWL', bat: 28, bowl: 85, style: 'TAILENDER', pwr: 42, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Nuwan Thushara', role: 'BOWL', bat: 22, bowl: 85, style: 'TAILENDER', pwr: 36, weak: 'SPIN', bowlType: 'PACE' }
+      ]
+    },
+    AFG: {
+      name: 'Afghanistan', code: 'AFG', primary: '#1d4ed8', secondary: '#dc2626',
+      players: [
+        { name: 'Rahmanullah Gurbaz', role: 'WK', bat: 88, bowl: 10, style: 'POWER HITTER', pwr: 89, weak: 'PACE', wk: true },
+        { name: 'Ibrahim Zadran', role: 'BAT', bat: 86, bowl: 12, style: 'ANCHOR', pwr: 74, weak: 'PACE' },
+        { name: 'Azmatullah Omarzai', role: 'AR', bat: 82, bowl: 81, style: 'ALL-ROUNDER', pwr: 82, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Hashmatullah Shahidi', role: 'BAT', bat: 81, bowl: 14, style: 'ANCHOR', pwr: 68, weak: 'PACE' },
+        { name: 'Mohammad Nabi', role: 'AR', bat: 80, bowl: 84, style: 'ALL-ROUNDER', pwr: 83, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Gulbadin Naib', role: 'AR', bat: 77, bowl: 79, style: 'ALL-ROUNDER', pwr: 81, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Karim Janat', role: 'AR', bat: 74, bowl: 76, style: 'ALL-ROUNDER', pwr: 79, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Rashid Khan', role: 'BOWL', bat: 68, bowl: 96, style: 'ALL-ROUNDER', pwr: 84, weak: 'PACE', cap: true, bowlType: 'SPIN' },
+        { name: 'Noor Ahmad', role: 'BOWL', bat: 26, bowl: 89, style: 'TAILENDER', pwr: 38, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Naveen-ul-Haq', role: 'BOWL', bat: 28, bowl: 87, style: 'TAILENDER', pwr: 40, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Fazalhaq Farooqi', role: 'BOWL', bat: 22, bowl: 89, style: 'TAILENDER', pwr: 36, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Najibullah Zadran', role: 'BAT', bat: 80, bowl: 10, style: 'POWER HITTER', pwr: 86, weak: 'SPIN' },
+        { name: 'Mujeeb Ur Rahman', role: 'BOWL', bat: 36, bowl: 87, style: 'TAILENDER', pwr: 46, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Rahmat Shah', role: 'BAT', bat: 82, bowl: 24, style: 'ANCHOR', pwr: 70, weak: 'PACE' },
+        { name: 'Sediqullah Atal', role: 'BAT', bat: 79, bowl: 10, style: 'STROKE MAKER', pwr: 78, weak: 'PACE' }
+      ]
+    },
+    BAN: {
+      name: 'Bangladesh', code: 'BAN', primary: '#15803d', secondary: '#dc2626',
+      players: [
+        { name: 'Tanzid Hasan', role: 'BAT', bat: 81, bowl: 10, style: 'STROKE MAKER', pwr: 80, weak: 'PACE' },
+        { name: 'Litton Das', role: 'WK', bat: 84, bowl: 10, style: 'STROKE MAKER', pwr: 79, weak: 'PACE', wk: true },
+        { name: 'Najmul Hossain Shanto', role: 'BAT', bat: 83, bowl: 18, style: 'ANCHOR', pwr: 73, weak: 'PACE', cap: true },
+        { name: 'Towhid Hridoy', role: 'BAT', bat: 85, bowl: 12, style: 'STROKE MAKER', pwr: 82, weak: 'PACE' },
+        { name: 'Shakib Al Hasan', role: 'AR', bat: 84, bowl: 87, style: 'ALL-ROUNDER', pwr: 78, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Mahmudullah', role: 'AR', bat: 81, bowl: 68, style: 'ALL-ROUNDER', pwr: 80, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Mehidy Hasan Miraz', role: 'AR', bat: 77, bowl: 85, style: 'ALL-ROUNDER', pwr: 74, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Rishad Hossain', role: 'BOWL', bat: 52, bowl: 85, style: 'TAILENDER', pwr: 65, weak: 'PACE', bowlType: 'SPIN' },
+        { name: 'Taskin Ahmed', role: 'BOWL', bat: 34, bowl: 88, style: 'TAILENDER', pwr: 46, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Mustafizur Rahman', role: 'BOWL', bat: 24, bowl: 89, style: 'TAILENDER', pwr: 38, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Shoriful Islam', role: 'BOWL', bat: 26, bowl: 85, style: 'TAILENDER', pwr: 40, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Mushfiqur Rahim', role: 'WK', bat: 84, bowl: 10, style: 'ANCHOR', pwr: 73, weak: 'PACE', wk: true },
+        { name: 'Jaker Ali', role: 'WK', bat: 80, bowl: 10, style: 'POWER HITTER', pwr: 84, weak: 'PACE', wk: true },
+        { name: 'Tanzim Hasan Sakib', role: 'BOWL', bat: 36, bowl: 84, style: 'TAILENDER', pwr: 48, weak: 'SPIN', bowlType: 'PACE' },
+        { name: 'Mahedi Hasan', role: 'AR', bat: 70, bowl: 82, style: 'ALL-ROUNDER', pwr: 72, weak: 'PACE', bowlType: 'SPIN' }
+      ]
+    }
+  };
+
+
+  /* ===== PLAYER POWERS, FIELDING RATINGS & FIELD PLANS ===== */
+  const TRAIT_INFO = {
+    CHASER:   { l: 'CHASER',       d: 'Chasing: +20% eye gain, out -1.2%' },
+    FINISHER: { l: 'FINISHER',     d: 'Death overs: SMASH/LOFT out -3%' },
+    POWERPLAY:{ l: 'PP KILLER',    d: 'Powerplay: SMASH/LOFT out -2.5%' },
+    ROCK:     { l: 'TEST ROCK',    d: 'Tests: STOP/PUSH out -0.5%, +15% eye' },
+    SPINHUNT: { l: 'SPIN HUNTER',  d: 'Vs spin: out -1.5%' },
+    CLASS:    { l: 'CLASS',        d: 'Every ball: out -0.6%' },
+    YORKER:   { l: 'YORKER KING',  d: 'Death overs: batter out +3%, 4s/6s -15%' },
+    SWING:    { l: 'NEW BALL',     d: 'Early overs: STOP/PUSH out +2.2%' },
+    STRANGLE: { l: 'MID STRANGLER',d: 'Middle overs / worn Test pitch: SMASH out +2.5%, 4s -12%' },
+    MYSTERY:  { l: 'MYSTERY',      d: 'New batters (eye<30): out +2.5%' },
+    SEAM:     { l: 'SEAM THREAT',  d: 'Green pitch / Tests: out +1.5%' }
+  };
+  const TRAIT_BY_NAME = {
+    'Virat Kohli':'CHASER','Ben Stokes':'CHASER','Babar Azam':'CHASER','Rohit Sharma':'POWERPLAY','Yashasvi Jaiswal':'POWERPLAY','Travis Head':'POWERPLAY',
+    'Phil Salt':'POWERPLAY','Jos Buttler':'POWERPLAY','Fakhar Zaman':'POWERPLAY','Quinton de Kock':'POWERPLAY','Rahmanullah Gurbaz':'POWERPLAY','Finn Allen':'POWERPLAY',
+    'Suryakumar Yadav':'FINISHER','Rishabh Pant':'FINISHER','Hardik Pandya':'FINISHER','Glenn Maxwell':'FINISHER','Marcus Stoinis':'FINISHER','Tim David':'FINISHER',
+    'David Miller':'FINISHER','Nicholas Pooran':'FINISHER','Andre Russell':'FINISHER','Rovman Powell':'FINISHER','Shimron Hetmyer':'FINISHER','Glenn Phillips':'FINISHER',
+    'Heinrich Klaasen':'SPINHUNT','Liam Livingstone':'SPINHUNT','Shubman Gill':'CLASS','Harry Brook':'CLASS','Kusal Mendis':'CLASS',
+    'Steve Smith':'ROCK','Marnus Labuschagne':'ROCK','Joe Root':'ROCK','Kane Williamson':'ROCK','Mohammad Rizwan':'ROCK','Mushfiqur Rahim':'ROCK',
+    'Jasprit Bumrah':'YORKER','Arshdeep Singh':'YORKER','Mitchell Starc':'YORKER','Jofra Archer':'YORKER','Haris Rauf':'YORKER','Anrich Nortje':'YORKER',
+    'Matheesha Pathirana':'YORKER','Lockie Ferguson':'YORKER','Naveen-ul-Haq':'YORKER','Fazalhaq Farooqi':'YORKER','Mustafizur Rahman':'YORKER',
+    'Mohammed Siraj':'SWING','Trent Boult':'SWING','Tim Southee':'SWING','Shaheen Afridi':'SWING','Mark Wood':'SWING','Taskin Ahmed':'SWING',
+    'Pat Cummins':'SEAM','Josh Hazlewood':'SEAM','Kagiso Rabada':'SEAM','Naseem Shah':'SEAM','Alzarri Joseph':'SEAM','Shamar Joseph':'SEAM','Marco Jansen':'SEAM',
+    'Ravindra Jadeja':'STRANGLE','Axar Patel':'STRANGLE','Adam Zampa':'STRANGLE','Adil Rashid':'STRANGLE','Shadab Khan':'STRANGLE','Keshav Maharaj':'STRANGLE',
+    'Mitchell Santner':'STRANGLE','Akeal Hosein':'STRANGLE','Shakib Al Hasan':'STRANGLE',
+    'Kuldeep Yadav':'MYSTERY','Rashid Khan':'MYSTERY','Noor Ahmad':'MYSTERY','Mujeeb Ur Rahman':'MYSTERY','Maheesh Theekshana':'MYSTERY','Wanindu Hasaranga':'MYSTERY',
+    'Tabraiz Shamsi':'MYSTERY','Abrar Ahmed':'MYSTERY'
+  };
+  const FLD_STARS = { 'Ravindra Jadeja':96,'Glenn Phillips':96,'Glenn Maxwell':94,'Virat Kohli':92,'Cameron Green':90,'Ben Stokes':90,'Aiden Markram':88,'David Miller':88,
+    'Liam Livingstone':86,'Rishabh Pant':84,'Rachin Ravindra':88,'Daryl Mitchell':87,'Marnus Labuschagne':89,'Jason Holder':85,'Suryakumar Yadav':87,'Hardik Pandya':86 };
+  Object.values(TEAMS).forEach(t => t.players.forEach(p => {
+    const bowlerLike = p.role === 'BOWL' || (p.bowl >= 80 && p.bat < 60);
+    p.trait = TRAIT_BY_NAME[p.name] || (bowlerLike ? (p.bowlType === 'SPIN' ? 'STRANGLE' : 'SEAM')
+      : p.style === 'POWER HITTER' && p.pwr >= 88 ? 'FINISHER' : p.style === 'ANCHOR' ? 'ROCK' : p.style === 'STROKE MAKER' ? 'POWERPLAY' : 'CLASS');
+    const h = [...p.name].reduce((a, c) => a + c.charCodeAt(0), 0) % 16;
+    p.fld = FLD_STARS[p.name] || (64 + h + (p.role === 'AR' ? 8 : 0) + (p.role === 'BOWL' ? -3 : 0) + (p.role === 'WK' ? 6 : 0));
+  }));
+  function traitPill(p) {
+    const t = p && TRAIT_INFO[p.trait];
+    return t ? `<span class="mini-pill pill-trait" title="${t.d}">★ ${t.l}</span>` : '';
+  }
+
+  // Field plans = fielder PLACEMENT (count of in-ring stars is set separately). o = extra out% per shot, m = run-weight multipliers.
+  const FIELD_PLANS = {
+    CUSTOM:   { n: 'CUSTOM',      in: 6, o: {}, m: {} },
+    ATTACK:   { n: 'ATTACK',      in: 7, slips: 2, o: { STOP: .4, PUSH: 1.6, SMASH: 1.0, LOFT: -.8 }, m: { 1: .85, 4: 1.1 } },
+    POWERPLAY:{ n: 'POWERPLAY',   in: 8, o: { STOP: .2, PUSH: .8, SMASH: .4, LOFT: -.8 }, m: { 1: .9, 4: 1.15, 6: 1.08 } },
+    BALANCED: { n: 'BALANCED',    in: 6, o: {}, m: {} },
+    SPINTRAP: { n: 'SPIN TRAP',   in: 6, spin: true, o: { STOP: .6, PUSH: 1.8, SMASH: .6, LOFT: .3 }, m: { 1: .8, 4: .95 } },
+    DEFENSIVE:{ n: 'DEFENSIVE',   in: 4, o: { PUSH: -.3, SMASH: -.8, LOFT: 1.0 }, m: { 1: 1.2, 2: 1.1, 4: .75, 6: .92 } },
+    DEATH:    { n: 'DEATH',       in: 5, o: { SMASH: .6, LOFT: 2.0 }, m: { 1: 1.12, 4: .65, 6: .82 } },
+    SLIPS:    { n: 'SLIP CORDON', in: 7, slips: 3, pace: true, o: { STOP: .8, PUSH: 1.9, SMASH: .8, LOFT: -.5 }, m: { 1: .8, 4: 1.08 } }
+  };
+  function fieldMods(plan, bowlType, shot) {
+    const P = FIELD_PLANS[plan] || FIELD_PLANS.CUSTOM;
+    let k = 1;
+    if (P.spin && bowlType !== 'SPIN') k = 0.3;      // spin trap does little against pace
+    if (P.pace && bowlType === 'SPIN') k = 0.4;      // slips are for seam
+    const m = {};
+    Object.keys(P.m).forEach(r => { m[r] = 1 + (P.m[r] - 1) * k; });
+    return { out: (P.o[shot] || 0) * k, m };
+  }
+  function fieldNote(plan) {
+    const P = FIELD_PLANS[plan] || FIELD_PLANS.CUSTOM;
+    const f = x => (x >= 1 ? '+' : '') + Math.round((x - 1) * 100) + '%';
+    const bits = ['1', '4', '6'].filter(r => P.m[r]).map(r => `${r}s ${f(P.m[r])}`);
+    if (P.o.PUSH) bits.push(`edges ${P.o.PUSH > 0 ? '+' : ''}${P.o.PUSH}%`);
+    if (P.o.LOFT) bits.push(`loft catches ${P.o.LOFT > 0 ? '+' : ''}${P.o.LOFT}%`);
+    return bits.join(' • ') || 'standard spread';
+  }
+  function fieldMinIn(m, inn) {
+    if (m.format === 'TEST') return 0;
+    const ov = Math.floor(inn.balls / 6);
+    if (m.format === 'T20') return ov < 6 ? 8 : (ov < 16 ? 6 : 5);
+    return ov < 10 ? 8 : (ov < 40 ? 6 : 5);
+  }
+  function enforceField(m, inn) { const mn = fieldMinIn(m, inn); if (m.inRing < mn) m.inRing = mn; }
+  function aiFieldUpdate(m, inn) {
+    if (m.isPvp || m.completed || isUserBowling()) return;
+    const key = m.currentInningsIdx + ':' + inn.balls;
+    if (m._fk === key) return;
+    m._fk = key;
+    const s = inn.batters[inn.strikerIdx] || { eyeIn: 0 }, b = inn.bowlers[inn.currentBowlerIdx] || {};
+    const ov = Math.floor(inn.balls / 6), eye = s.eyeIn || 0, spin = b.bowlType === 'SPIN';
+    let plan = 'BALANCED';
+    if (m.format === 'TEST') plan = eye < 30 ? (spin ? 'SPINTRAP' : 'SLIPS') : (eye >= 70 ? 'DEFENSIVE' : (spin ? 'SPINTRAP' : 'BALANCED'));
+    else {
+      const pp = m.format === 'T20' ? ov < 6 : ov < 10, dth = m.format === 'T20' ? ov >= 16 : ov >= 40;
+      plan = pp ? 'POWERPLAY' : dth ? (eye >= 40 ? 'DEATH' : 'ATTACK') : eye >= 65 ? 'DEFENSIVE' : spin ? 'SPINTRAP' : eye < 25 ? 'ATTACK' : 'BALANCED';
+    }
+    m.fieldPlan = plan;
+    m.inRing = Math.max(FIELD_PLANS[plan].in, fieldMinIn(m, inn));
+  }
+  function setFieldPlan(plan) {
+    const m = State.match;
+    if (!m || !isUserBowling() || m.completed || !FIELD_PLANS[plan]) return;
+    m.fieldPlan = plan;
+    m.inRing = Math.max(FIELD_PLANS[plan].in, fieldMinIn(m, getCurrentInnings()));
+    renderMatchHUD();
+    if (document.getElementById('modal-field').classList.contains('open')) renderFieldModal();
+    if (m.isPvp && State.pvp.active) sendPvPMessage({ type: 'SYNC_MATCH', match: State.match });
+  }
+
+  /* ============================================================================
+     2. GLOBAL APPLICATION STATE
+     ============================================================================ */
+  const State = {
+    p1Team: 'IND',
+    p2Team: 'AUS',
+    format: 'T20',
+    pitch: 'BALANCED',
+    customSquads: {},
+    squadModalSide: 'p1',
+    selectedSwapIdx: null,
+    match: null,
+    wc: null,
+    series: null,
+    bannerTimer: null,
+    pvp: {
+      active: false,
+      role: null,
+      roomCode: '',
+      bc: null,
+      localStream: null,
+      micOn: false
+    }
+  };
+
+  function getTeamRoster(code) {
+    if (!State.customSquads[code]) {
+      State.customSquads[code] = TEAMS[code].players.map((p, idx) => ({
+        ...p,
+        pwr: Math.min(147, Math.round((p.pwr || 78) * 1.5)),
+        id: code + '_' + idx
+      }));
+    }
+    return State.customSquads[code];
+  }
+
+  /* ============================================================================
+     3. WEB AUDIO STADIUM SYNTHESIZER & BROADCAST POP-UP BANNER
+     ============================================================================ */
+  const SoundFX = {
+    enabled: true,
+    ctx: null,
+    init() {
+      if (!this.ctx) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) this.ctx = new AudioCtx();
+      }
+    },
+    play(type) {
+      if (!this.enabled) return;
+      try {
+        this.init();
+        if (!this.ctx) return;
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        if (type === 'click') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(520, now);
+          osc.frequency.exponentialRampToValueAtTime(280, now + 0.05);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+          osc.start(now); osc.stop(now + 0.05);
+        } else if (type === 'bat') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.exponentialRampToValueAtTime(95, now + 0.09);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+          osc.start(now); osc.stop(now + 0.09);
+        } else if (type === 'four' || type === 'six') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(type === 'six' ? 440 : 350, now);
+          osc.frequency.exponentialRampToValueAtTime(type === 'six' ? 880 : 660, now + 0.28);
+          gain.gain.setValueAtTime(0.16, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+          osc.start(now); osc.stop(now + 0.28);
+        } else if (type === 'wicket') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(240, now);
+          osc.frequency.exponentialRampToValueAtTime(70, now + 0.32);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
+          osc.start(now); osc.stop(now + 0.32);
+        }
+      } catch (e) {}
+    }
+  };
+
+  function triggerBroadcastBanner(text, variantClass) {
+    const el = document.getElementById('broadcast-event-banner');
+    if (!el) return;
+    el.textContent = text;
+    el.className = `broadcast-event-banner ${variantClass} show`;
+    if (State.bannerTimer) clearTimeout(State.bannerTimer);
+    State.bannerTimer = setTimeout(() => {
+      el.classList.remove('show');
+    }, 1500);
+  }
+
+  function renderTeamShieldSVG(code, size = 34) {
+    const t = TEAMS[code] || TEAMS.IND;
+    return `<svg width="${size}" height="${size}" viewBox="0 0 40 40" style="flex-shrink:0;">
+      <path d="M20 2 L36 8 L33 25 C31 32 20 38 20 38 C20 38 9 32 7 25 L4 8 Z" fill="${t.primary}" stroke="${t.secondary}" stroke-width="2.5"/>
+      <text x="20" y="24" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-weight="900" font-size="11">${t.code}</text>
+    </svg>`;
+  }
+
+  /* ============================================================================
+     4. UNIFIED SHOT PROBABILITY ENGINE & NORMALIZED RUN CHIPS (NO BOWLER POWER)
+     ============================================================================ */
+  function normalizeRunDist(rawDist) {
+    const keys = ['0', '1', '2', '3', '4', '6'];
+    const total = keys.reduce((acc, k) => acc + Math.max(0, rawDist[k] || 0), 0);
+    const out = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 6: 0 };
+    if (total <= 0) {
+      out[0] = 100;
+      return out;
+    }
+    let sum = 0;
+    let maxKey = '0';
+    let maxVal = -1;
+    keys.forEach(k => {
+      const val = Math.round(((rawDist[k] || 0) / total) * 100);
+      out[k] = val;
+      sum += val;
+      if ((rawDist[k] || 0) > maxVal) {
+        maxVal = rawDist[k] || 0;
+        maxKey = k;
+      }
+    });
+    if (sum !== 100) out[maxKey] = Math.max(0, out[maxKey] + (100 - sum));
+    return out;
+  }
+
+  // How the field reshapes the run split of each shot. d = +1: all fielders in the ring, d = -1: all on the rope.
+  function fieldRunModel(raw, shot, o) {
+    const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+    const d = clamp((o.inRing - 5) / 5, -1, 1);
+    const ring = Math.max(0, d), rope = Math.max(0, -d);
+    const gap = clamp((o.batSkill - 70) / 30, 0, 1) + ((o.batStyle === 'ANCHOR' || o.batStyle === 'STROKE MAKER') ? 0.15 : 0);
+    const pw = clamp((o.batPwr - 90) / 57, 0, 1);
+    const f = { 0: 1, 1: 1, 2: 1, 3: 1, 4: 1, 6: 1 };
+    if (shot === 'STOP') {
+      f[0] += 0.10 * d; f[1] -= 0.30 * d; f[2] -= 0.20 * d;
+    } else if (shot === 'PUSH') {
+      f[0] += 0.18 * d; f[1] -= 0.28 * d; f[2] -= 0.22 * d; f[3] -= 0.35 * d; f[4] += 0.32 * d;
+    } else if (shot === 'SMASH') {
+      f[0] += 0.15 * d; f[1] -= 0.25 * d; f[2] -= 0.20 * d; f[3] -= 0.30 * d; f[4] += 0.30 * d;
+    } else { // LOFT: ring is beaten, rope fielders catch / cut off sixes
+      f[0] += 0.25 * d; f[2] += 0.35 * rope - 0.30 * ring; f[4] += 0.10 * ring - 0.20 * rope;
+      f[6] += 0.20 * ring - 0.28 * rope * (1 - 0.6 * pw);
+    }
+    if (shot !== 'LOFT') {
+      // good batters find gaps against a packed ring
+      f[1] *= 1 + 0.15 * gap * ring; f[2] *= 1 + 0.12 * gap * ring;
+      if (shot !== 'STOP') f[4] *= 1 + 0.08 * gap * ring;
+      if (o.bowlType === 'SPIN') { f[1] *= 1.08; f[2] *= 1.05; }
+      else if (shot !== 'STOP') f[4] *= 1.05;
+    }
+    if (shot === 'STOP' || shot === 'PUSH') { f[0] *= 1 - 0.15 * o.eyeNorm; f[1] *= 1 + 0.10 * o.eyeNorm; }
+    [0, 1, 2, 3, 4, 6].forEach(k => { raw[k] = (raw[k] || 0) * Math.max(0.2, f[k]); });
+    if (shot === 'LOFT') { raw[1] += 3.5 * rope; raw[3] += 2.0 * rope; } // lofted but stopped by a deep fielder
+  }
+
+  function calculateShotProbabilities(shotType, params) {
+    const {
+      format = 'T20',
+      pitch = 'BALANCED',
+      inRing = 6,
+      eyeIn = 0,
+      batSkill = 82,
+      bowlSkill = 82,
+      repeatPenalty = false,
+      batStyle = 'STROKE MAKER',
+      batWeak = 'NONE',
+      bowlType = 'PACE',
+      batPwr = 117,
+      plan = 'CUSTOM', over = 0, chasing = false, batTrait = '', bowlTrait = '',
+      testDay = 1, fldRating = 75
+    } = params;
+
+    const outRing = 10 - inRing;
+    const isTest = format === 'TEST';
+    const locked = isTest && ((shotType === 'SMASH' && eyeIn < 50) || (shotType === 'LOFT' && eyeIn < 75));
+
+    const styleTable = STYLE_CONFIG[batStyle] || STYLE_CONFIG['STROKE MAKER'];
+    const shotCfg = styleTable[shotType] || styleTable.STOP;
+    const eyeNorm = Math.max(0, Math.min(1, eyeIn / 100));
+
+    let effectiveFloor = shotCfg.floor;
+    if (isTest) {
+      if (shotType === 'STOP') effectiveFloor = 0.5;
+      else if (shotType === 'PUSH') effectiveFloor = 1.0;
+    }
+
+    let outPct = shotCfg.base - (shotCfg.base - effectiveFloor) * eyeNorm;
+
+    const skillDiff = bowlSkill - batSkill;
+    if (skillDiff > 0) {
+      const gapFactor = (shotType === 'SMASH' || shotType === 'LOFT') ? 0.30 : (shotType === 'PUSH' ? 0.24 : 0.14);
+      outPct += skillDiff * gapFactor * (1 - eyeNorm * 0.85);
+    }
+
+    if (batWeak !== 'NONE' && batWeak === bowlType) {
+      const weakRaw = (shotType === 'SMASH' || shotType === 'LOFT') ? 6.5 : (shotType === 'PUSH' ? 2.4 : 0.8);
+      outPct += weakRaw * (1 - eyeNorm * 0.8);
+    }
+
+    if (shotType === 'SMASH' || shotType === 'LOFT') {
+      if (repeatPenalty) outPct += 3.0;
+    }
+
+    if ((shotType === 'STOP' || shotType === 'PUSH') && inRing >= 8) {
+      outPct += (inRing - 7) * 0.65;
+    }
+
+    if (pitch === 'GREEN' && bowlType === 'PACE') outPct += 1.4 * (1 - eyeNorm * 0.6);
+    if (pitch === 'DUSTY' && bowlType === 'SPIN') outPct += 1.6 * (1 - eyeNorm * 0.6);
+    if (pitch === 'FLAT') outPct -= 0.8;
+
+    // ---- Phase, player powers, pitch wear, fielding quality & field plan ----
+    {
+      const agg = shotType === 'SMASH' || shotType === 'LOFT';
+      const lo = 1 - eyeNorm * 0.6;
+      const isDeath = format === 'T20' ? over >= 16 : (format === 'ODI' ? over >= 40 : false);
+      const isPP = format === 'T20' ? over < 6 : (format === 'ODI' ? over < 10 : false);
+      const isMid = !isTest && !isPP && !isDeath;
+      var rm = { 1: 1, 2: 1, 4: 1, 6: 1 };
+      let b = 0;
+      if (batTrait === 'CHASER' && chasing) b -= 1.2 * lo;
+      if (batTrait === 'FINISHER' && isDeath && agg) b -= 3.0;
+      if (batTrait === 'POWERPLAY' && isPP && agg) b -= 2.5;
+      if (batTrait === 'ROCK' && isTest && !agg) b -= 0.5;
+      if (batTrait === 'SPINHUNT' && bowlType === 'SPIN') b -= 1.5 * lo;
+      if (batTrait === 'CLASS') b -= 0.6;
+      if (bowlTrait === 'YORKER' && isDeath) { b += agg ? 3.0 : 0.9; rm[4] *= 0.85; rm[6] *= 0.85; }
+      if (bowlTrait === 'SWING' && (isPP || over < 3 || (isTest && over < 20)) && !agg) b += 2.2 * lo;
+      if (bowlTrait === 'STRANGLE' && (isMid || (isTest && testDay >= 2))) { if (shotType === 'SMASH') b += 2.5; rm[4] *= 0.88; }
+      if (bowlTrait === 'MYSTERY' && eyeIn < 30) b += 2.5;
+      if (bowlTrait === 'SEAM' && (pitch === 'GREEN' || isTest)) b += 1.5 * lo;
+      if (isTest && bowlType === 'SPIN') b += Math.max(0, testDay - 1) * 0.45 * lo;
+      if (isTest && bowlType === 'PACE' && testDay >= 4) b -= 0.6;
+      b += ((fldRating - 75) / 25) * (shotType === 'LOFT' ? 1.4 : (shotType === 'SMASH' ? 0.9 : 0.4));
+      const fm = fieldMods(plan, bowlType, shotType);
+      b += fm.out;
+      Object.keys(fm.m).forEach(r => { rm[r] *= fm.m[r]; });
+      outPct += b;
+      if (agg) outPct *= 0.875; // SMASH / LOFT: previous 0.70 multiplier raised by 25%
+    }
+
+    let maxCap = 82.0;
+    if (shotType === 'SMASH') {
+      effectiveFloor = Math.min(effectiveFloor, 5.6);
+      maxCap = 21.0;
+    } else if (shotType === 'LOFT') {
+      effectiveFloor = Math.min(effectiveFloor, 11.3);
+      maxCap = 35.0;
+    }
+
+    outPct = Math.max(effectiveFloor, Math.min(maxCap, Number(outPct.toFixed(1))));
+    const safePct = Number((100 - outPct).toFixed(1));
+
+    const pwrScale = Math.max(0.55, (batPwr / 100) * (shotType === 'LOFT' ? 0.75 : 1.0));
+    const pitchRunBoost = pitch === 'FLAT' ? 1.15 : (pitch === 'GREEN' || pitch === 'DUSTY' ? 0.92 : 1.0);
+    let rawDist = { 0: 85, 1: 12, 2: 3, 3: 0, 4: 0, 6: 0 };
+
+    if (shotType === 'STOP') {
+      rawDist = {
+        0: 86 + inRing * 0.7,
+        1: Math.max(2, 11 - inRing * 0.5) * pitchRunBoost,
+        2: Math.max(1, 3 - inRing * 0.15),
+        3: 0,
+        4: 0,
+        6: 0
+      };
+    } else if (shotType === 'PUSH') {
+      rawDist = {
+        0: 26 + inRing * 2.2,
+        1: (44 - inRing * 1.4) * pitchRunBoost,
+        2: (16 - outRing * 0.6) * pitchRunBoost,
+        3: 4,
+        4: Math.max(2, (10 - outRing * 0.9) * pwrScale * pitchRunBoost),
+        6: 0
+      };
+      // Reduce PUSH run-scoring weights (1-6) by 50% into dot balls, plus +25% boost in TEST only
+      const pushRunMult = isTest ? (0.5 * 1.25) : 0.5;
+      const beforeRuns = rawDist[1] + rawDist[2] + rawDist[3] + rawDist[4] + rawDist[6];
+      rawDist[1] *= pushRunMult;
+      rawDist[2] *= pushRunMult;
+      rawDist[3] *= pushRunMult;
+      rawDist[4] *= pushRunMult;
+      rawDist[6] *= pushRunMult;
+      const afterRuns = rawDist[1] + rawDist[2] + rawDist[3] + rawDist[4] + rawDist[6];
+      rawDist[0] += Math.max(0, beforeRuns - afterRuns);
+
+      if (isTest) {
+        rawDist[4] = Math.min(rawDist[4], 5);
+        rawDist[3] = Math.min(rawDist[3], 6);
+        rawDist[2] = Math.min(rawDist[2], 20);
+      }
+    } else if (shotType === 'SMASH') {
+      // SMASH is ground-only (0-4 runs, 0% sixes)
+      rawDist = {
+        0: Math.max(8, 22 + inRing * 1.1 - eyeNorm * 8),
+        1: Math.max(10, 28 - inRing * 0.7),
+        2: Math.max(8, 18 - outRing * 0.4),
+        3: 4,
+        4: Math.max(12, (28 + eyeNorm * 14 - outRing * 1.3) * pwrScale * pitchRunBoost),
+        6: 0
+      };
+    } else if (shotType === 'LOFT') {
+      // LOFT removes 1s, caps 2/4 weights, and guarantees >=60% sixes on successful hit
+      const w2 = Math.min(14, Math.max(4, 14 - outRing * 0.7));
+      const w4 = Math.min(24, Math.max(10, (24 - outRing * 1.1) * pwrScale));
+      const w0 = Math.max(4, 12 - eyeNorm * 6);
+      const nonSixSum = w0 + w2 + w4;
+      const w6 = Math.max(Math.ceil(nonSixSum * 1.55), (48 + eyeNorm * 22 - outRing * 1.4) * pwrScale * pitchRunBoost);
+      rawDist = {
+        0: w0,
+        1: 0,
+        2: w2,
+        3: 0,
+        4: w4,
+        6: w6
+      };
+    }
+
+    fieldRunModel(rawDist, shotType, { inRing, eyeNorm, batSkill, batStyle, batPwr, bowlType });
+    [1, 2, 4, 6].forEach(k => { rawDist[k] = (rawDist[k] || 0) * (rm[k] || 1); });
+    const runDist = normalizeRunDist(rawDist);
+    return { shotType, locked, outPct, safePct, runDist };
+  }
+
+  function getShotProbabilities(shotType) {
+    const m = State.match;
+    if (!m) return calculateShotProbabilities(shotType, {});
+    const inn = getCurrentInnings();
+    const striker = (inn && inn.batters[inn.strikerIdx]) || { eyeIn: 0, bat: 82, style: 'STROKE MAKER', weak: 'NONE', pwr: 117 };
+    const bowler = (inn && inn.bowlers[inn.currentBowlerIdx]) || { bowl: 82, bowlType: 'PACE' };
+    const repeatPenalty = (shotType === 'SMASH' || shotType === 'LOFT') && m.lastShotType === shotType;
+
+    return calculateShotProbabilities(shotType, {
+      format: m.format,
+      pitch: m.pitch,
+      inRing: m.inRing,
+      eyeIn: striker.eyeIn,
+      batSkill: striker.bat,
+      bowlSkill: bowler.bowl,
+      repeatPenalty,
+      batStyle: striker.style || 'STROKE MAKER',
+      batWeak: striker.weak || 'NONE',
+      bowlType: bowler.bowlType || 'PACE',
+      batPwr: striker.pwr || 117,
+      plan: m.fieldPlan || 'CUSTOM',
+      over: Math.floor(inn.balls / 6),
+      chasing: inn.target !== null,
+      batTrait: striker.trait || '',
+      bowlTrait: bowler.trait || '',
+      testDay: m.testDay || 1,
+      fldRating: inn.bowlers.reduce((a, x) => a + (x.fld || 75), 0) / inn.bowlers.length
+    });
+  }
+
+  /* ============================================================================
+     5. MATCH ENGINE & INNINGS STATE
+     ============================================================================ */
+  function createInningsState(batCode, bowlCode, innNum, target = null) {
+    const batXI = getTeamRoster(batCode).slice(0, 11).map((p, idx) => ({
+      ...p,
+      order: idx + 1,
+      runs: 0,
+      balls: 0,
+      fours: 0,
+      sixes: 0,
+      out: false,
+      dismissal: 'not out',
+      eyeIn: 0
+    }));
+
+    const bowlXI = getTeamRoster(bowlCode).slice(0, 11).map((p, idx) => ({
+      ...p,
+      order: idx + 1,
+      oversBalls: 0,
+      maidens: 0,
+      runsConceded: 0,
+      wickets: 0
+    }));
+
+    const eligible = bowlXI.filter(p => p.role === 'BOWL' || p.role === 'AR');
+    const openingBowlerIdx = eligible.length > 0 ? bowlXI.indexOf(eligible[0]) : 10;
+
+    return {
+      innNum,
+      batCode,
+      bowlCode,
+      runs: 0,
+      wickets: 0,
+      balls: 0,
+      target,
+      declared: false,
+      batters: batXI,
+      bowlers: bowlXI,
+      strikerIdx: 0,
+      nonStrikerIdx: 1,
+      nextBatterIdx: 2,
+      currentBowlerIdx: openingBowlerIdx,
+      lastBowlerIdx: -1,
+      thisOver: [],
+      overRuns: 0,
+      overHistory: [],
+      partnership: { runs: 0, balls: 0 },
+      fallOfWickets: []
+    };
+  }
+
+  function getCurrentInnings() {
+    if (!State.match) return null;
+    return State.match.innings[State.match.currentInningsIdx];
+  }
+
+  function formatOvers(balls) {
+    return `${Math.floor(balls / 6)}.${balls % 6}`;
+  }
+
+  function lastName(full) {
+    if (!full) return '';
+    const parts = full.trim().split(' ');
+    return parts[parts.length - 1];
+  }
+
+  function isUserBatting() {
+    const m = State.match;
+    if (!m) return false;
+    const inn = getCurrentInnings();
+    if (!inn) return false;
+    if (m.isPvp) {
+      return (State.pvp.role === 'HOST' && inn.batCode === m.p1Team) ||
+             (State.pvp.role === 'GUEST' && inn.batCode === m.p2Team);
+    }
+    return inn.batCode === m.p1Team;
+  }
+
+  function isUserBowling() {
+    const m = State.match;
+    if (!m) return false;
+    const inn = getCurrentInnings();
+    if (!inn) return false;
+    if (m.isPvp) {
+      return (State.pvp.role === 'HOST' && inn.bowlCode === m.p1Team) ||
+             (State.pvp.role === 'GUEST' && inn.bowlCode === m.p2Team);
+    }
+    return inn.bowlCode === m.p1Team;
+  }
+
+  function getMaxOversPerBowler(format) {
+    if (format === 'T20') return 4;
+    if (format === 'ODI') return 10;
+    return 999;
+  }
+
+  function initMatch(config) {
+    const format = config.format || State.format || 'T20';
+    const maxOvers = format === 'T20' ? 20 : (format === 'ODI' ? 50 : 450);
+    const maxInnings = format === 'TEST' ? 4 : 2;
+
+    State.match = {
+      mode: config.mode || 'QUICK',
+      p1Team: config.p1Team || State.p1Team,
+      p2Team: config.p2Team || State.p2Team,
+      format,
+      pitch: config.pitch || State.pitch || 'BALANCED',
+      maxOvers,
+      maxInnings,
+      inRing: format === 'TEST' ? 7 : 6,
+      innings: [],
+      currentInningsIdx: 0,
+      lastShotType: null,
+      fieldPlan: 'BALANCED',
+      testDay: 1,
+      testDayBalls: 0,
+      completed: false,
+      resultText: '',
+      isPvp: !!config.isPvp,
+      awaitingBowlerSwitch: false,
+      pendingBowlerSwitch: false,
+      heroDisplay: {
+        over: '0.0 OV',
+        big: 'READY',
+        word: `${format} • ${config.pitch || State.pitch}`,
+        sub: 'Toss & opening delivery ready',
+        tone: ''
+      }
+    };
+
+    switchView('view-match');
+
+    if (config.skipToss) {
+      const batFirst = config.batFirst || State.match.p1Team;
+      const bowlFirst = batFirst === State.match.p1Team ? State.match.p2Team : State.match.p1Team;
+      beginMatchAfterToss(batFirst, bowlFirst);
+    } else {
+      openTossModal();
+    }
+  }
+
+  function openTossModal() {
+    const m = State.match;
+    document.getElementById('toss-pitch-tag').textContent = `${m.format} • ${m.pitch}`;
+    document.getElementById('toss-p1-badge').innerHTML = renderTeamShieldSVG(m.p1Team, 42);
+    document.getElementById('toss-p2-badge').innerHTML = renderTeamShieldSVG(m.p2Team, 42);
+    document.getElementById('toss-prompt-text').textContent = `${TEAMS[m.p1Team].name} vs ${TEAMS[m.p2Team].name} — Call Heads or Tails!`;
+    document.getElementById('toss-call-btns').classList.remove('hidden');
+    document.getElementById('toss-choice-btns').classList.add('hidden');
+    openModal('modal-toss');
+  }
+
+  function handleTossCall(call) {
+    SoundFX.play('click');
+    const m = State.match;
+    const coin = Math.random() < 0.5 ? 'HEADS' : 'TAILS';
+    const p1Won = coin === call;
+    document.getElementById('toss-call-btns').classList.add('hidden');
+
+    if (p1Won) {
+      document.getElementById('toss-result-msg').textContent = `Coin landed ${coin}! ${TEAMS[m.p1Team].name} won the toss.`;
+      document.getElementById('toss-choice-btns').classList.remove('hidden');
+      document.getElementById('toss-choice-btns').style.display = 'flex';
+    } else {
+      const aiDecision = (m.pitch === 'GREEN' || m.format === 'T20') && Math.random() < 0.55 ? 'BOWL' : 'BAT';
+      const batFirst = aiDecision === 'BAT' ? m.p2Team : m.p1Team;
+      const bowlFirst = batFirst === m.p1Team ? m.p2Team : m.p1Team;
+      document.getElementById('toss-prompt-text').textContent = `Coin landed ${coin}! ${TEAMS[m.p2Team].name} won and elected to ${aiDecision} first.`;
+      setTimeout(() => {
+        closeModal('modal-toss');
+        beginMatchAfterToss(batFirst, bowlFirst, false);
+      }, 950);
+    }
+  }
+
+  function beginMatchAfterToss(batFirst, bowlFirst) {
+    const m = State.match;
+    m.innings = [createInningsState(batFirst, bowlFirst, 1, null)];
+    m.currentInningsIdx = 0;
+    m.inRing = m.format === 'TEST' ? 7 : 6;
+    setHeroScorepiece('0.0 OV', 'LIVE', `${TEAMS[batFirst].code} BATTING`, `${TEAMS[batFirst].name} won toss & bat`, 'outcome-run');
+    renderMatchHUD();
+    checkIfAITurn();
+  }
+
+  function setHeroScorepiece(over, big, word, sub, tone = '') {
+    if (!State.match) return;
+    State.match.heroDisplay = { over, big, word, sub, tone };
+  }
+
+  /* ============================================================================
+     6. BALL EXECUTION, TEST DECLARATIONS & INNINGS PROGRESSION
+     ============================================================================ */
+  function executeBall(shotType, forcedRng = null) {
+    const m = State.match;
+    if (!m || m.completed) return;
+    if (m.isPvp && m.awaitingBowlerSwitch) return;
+
+    const inn = getCurrentInnings();
+    if (!inn) return;
+
+    const probs = getShotProbabilities(shotType);
+    if (probs.locked) return;
+
+    const striker = inn.batters[inn.strikerIdx];
+    const bowler = inn.bowlers[inn.currentBowlerIdx];
+    const rates = getPlayerEyeRates(striker);
+    const eyeK = (striker.trait === 'CHASER' && inn.target !== null) ? 1.2 : (striker.trait === 'ROCK' && m.format === 'TEST' ? 1.15 : 1);
+    rates.stopGain *= eyeK; rates.pushGainRuns *= eyeK; rates.pushGainDot *= eyeK;
+
+    const rOut = forcedRng ? forcedRng.out : Math.random() * 100;
+    const isOut = rOut < probs.outPct;
+
+    inn.balls++;
+    striker.balls++;
+    bowler.oversBalls++;
+    inn.partnership.balls++;
+    if (m.format === 'TEST') m.testDayBalls++;
+
+    const overStamp = `${formatOvers(inn.balls)} OV • ${lastName(bowler.name).toUpperCase()}`;
+
+    if (isOut) {
+      inn.wickets++;
+      striker.out = true;
+      bowler.wickets++;
+      const dismissalModes = shotType === 'LOFT'
+        ? [`c Deep b ${lastName(bowler.name)}`, `c Long-On b ${lastName(bowler.name)}`]
+        : [`b ${lastName(bowler.name)}`, `lbw b ${lastName(bowler.name)}`];
+      striker.dismissal = dismissalModes[Math.floor(Math.random() * dismissalModes.length)];
+      inn.thisOver.push('W');
+      inn.fallOfWickets.push(`${inn.runs}/${inn.wickets} (${lastName(striker.name)}, ${formatOvers(inn.balls)})`);
+
+      SoundFX.play('wicket');
+      triggerBroadcastBanner(`WICKET! ${lastName(striker.name).toUpperCase()} OUT`, 'banner-wicket');
+      setHeroScorepiece(overStamp, 'W', 'OUT!', `${striker.name} ${striker.dismissal} • ${striker.runs} (${striker.balls})`, 'outcome-wicket');
+
+      if (inn.wickets < 10 && inn.nextBatterIdx < 11) {
+        inn.strikerIdx = inn.nextBatterIdx;
+        inn.nextBatterIdx++;
+        inn.partnership = { runs: 0, balls: 0 };
+      }
+    } else {
+      const rRun = forcedRng ? forcedRng.run : Math.random() * 100;
+      let acc = 0;
+      let runs = 0;
+      const runKeys = [0, 1, 2, 3, 4, 6];
+      for (let i = 0; i < runKeys.length; i++) {
+        const k = runKeys[i];
+        acc += probs.runDist[k] || 0;
+        if (rRun <= acc || i === runKeys.length - 1) {
+          runs = k;
+          break;
+        }
+      }
+
+      const prevRuns = striker.runs;
+      inn.runs += runs;
+      striker.runs += runs;
+      bowler.runsConceded += runs;
+      inn.overRuns += runs;
+      inn.partnership.runs += runs;
+
+      if (runs === 4) striker.fours++;
+      if (runs === 6) striker.sixes++;
+
+      if (shotType === 'STOP') {
+        striker.eyeIn = Math.min(100, Number((striker.eyeIn + rates.stopGain).toFixed(1)));
+      } else if (shotType === 'PUSH') {
+        const gain = runs > 0 ? rates.pushGainRuns : rates.pushGainDot;
+        striker.eyeIn = Math.min(100, Number((striker.eyeIn + gain).toFixed(1)));
+      } else if (shotType === 'SMASH') {
+        striker.eyeIn = m.format === 'TEST' ? Math.max(0, Number((striker.eyeIn - 10).toFixed(1))) : Math.min(100, Number((striker.eyeIn + 2).toFixed(1)));
+      } else if (shotType === 'LOFT') {
+        striker.eyeIn = m.format === 'TEST' ? Math.max(0, Number((striker.eyeIn - 25).toFixed(1))) : Math.min(100, Number((striker.eyeIn + 1).toFixed(1)));
+      }
+
+      inn.thisOver.push(String(runs));
+
+      if (runs === 6) {
+        SoundFX.play('six');
+        triggerBroadcastBanner(`SIX! ${lastName(striker.name).toUpperCase()}`, 'banner-six');
+        setHeroScorepiece(overStamp, '6', 'MAXIMUM SIX!', `${lastName(striker.name)} launches ${shotType} • Eye ${Math.round(striker.eyeIn)}%`, 'outcome-six');
+      } else if (runs === 4) {
+        SoundFX.play('four');
+        triggerBroadcastBanner(`FOUR! BOUNDARY`, 'banner-four');
+        setHeroScorepiece(overStamp, '4', 'CRACKING FOUR!', `${lastName(striker.name)} pierces the ring • Eye ${Math.round(striker.eyeIn)}%`, 'outcome-four');
+      } else if (runs === 0) {
+        SoundFX.play('bat');
+        setHeroScorepiece(overStamp, '0', 'DOT BALL', `${lastName(striker.name)} defends (${shotType}) • Eye ${Math.round(striker.eyeIn)}%`, '');
+      } else {
+        SoundFX.play('bat');
+        setHeroScorepiece(overStamp, String(runs), runs === 1 ? 'SINGLE' : `${runs} RUNS`, `${lastName(striker.name)} rotates strike • Eye ${Math.round(striker.eyeIn)}%`, 'outcome-run');
+      }
+
+      if (prevRuns < 50 && striker.runs >= 50) {
+        triggerBroadcastBanner(`HALF-CENTURY! ${lastName(striker.name).toUpperCase()} 50*`, 'banner-milestone');
+      } else if (prevRuns < 100 && striker.runs >= 100) {
+        triggerBroadcastBanner(`CENTURY! ${lastName(striker.name).toUpperCase()} 100*`, 'banner-milestone');
+      }
+
+      if (runs % 2 === 1) {
+        const tmp = inn.strikerIdx;
+        inn.strikerIdx = inn.nonStrikerIdx;
+        inn.nonStrikerIdx = tmp;
+      }
+    }
+
+    m.lastShotType = shotType;
+
+    // End of Over handling
+    let overEnded = false;
+    if (inn.balls % 6 === 0) {
+      overEnded = true;
+      if (inn.overRuns === 0) bowler.maidens++;
+      const overNum = Math.floor(inn.balls / 6);
+      inn.overHistory.unshift({
+        overNum,
+        bowler: lastName(bowler.name),
+        balls: [...inn.thisOver],
+        runs: inn.overRuns
+      });
+      if (inn.overHistory.length > 18) inn.overHistory.pop();
+      inn.thisOver = [];
+      inn.overRuns = 0;
+
+      const tmp = inn.strikerIdx;
+      inn.strikerIdx = inn.nonStrikerIdx;
+      inn.nonStrikerIdx = tmp;
+
+      inn.lastBowlerIdx = inn.currentBowlerIdx;
+    }
+
+    // Check Test Day Boundary (90 overs = 540 balls per day)
+    if (m.format === 'TEST' && m.testDayBalls >= 540) {
+      m.testDay++;
+      m.testDayBalls = 0;
+    }
+
+    // Check Innings Completion or AI Test Declaration
+    if (checkInningsEndOrDeclaration(inn)) {
+      return;
+    }
+
+    // Bowler Rotation at Over End
+    if (overEnded) {
+      if (m.isPvp && isUserBowling()) {
+        m.awaitingBowlerSwitch = true;
+        renderMatchHUD();
+        openBowlerModal(true);
+        return;
+      } else if (m.isPvp && !isUserBowling()) {
+        m.awaitingBowlerSwitch = true;
+        renderMatchHUD();
+        return;
+      } else {
+        autoSelectNextBowler(inn);
+      }
+    }
+
+    renderMatchHUD();
+
+    if (m.isPvp && State.pvp.active) {
+      sendPvPMessage({ type: 'SYNC_MATCH', match: State.match });
+    }
+
+    checkIfAITurn();
+  }
+
+  function autoSelectNextBowler(inn) {
+    const m = State.match;
+    const maxOv = getMaxOversPerBowler(m.format);
+    const maxBalls = maxOv * 6;
+    let pool = inn.bowlers
+      .map((b, idx) => ({ b, idx }))
+      .filter(x => x.idx !== inn.lastBowlerIdx && x.b.oversBalls < maxBalls && (x.b.role === 'BOWL' || x.b.role === 'AR'));
+
+    if (pool.length === 0) {
+      pool = inn.bowlers
+        .map((b, idx) => ({ b, idx }))
+        .filter(x => x.idx !== inn.lastBowlerIdx && x.b.oversBalls < maxBalls);
+    }
+    if (pool.length > 0) {
+      pool.sort((a, b) => (b.b.bowl - a.b.bowl) + (Math.random() * 8 - 4));
+      inn.currentBowlerIdx = pool[0].idx;
+    }
+  }
+
+  function checkInningsEndOrDeclaration(inn) {
+    const m = State.match;
+    const totalMatchBalls = m.innings.reduce((acc, x) => acc + x.balls, 0);
+    const maxTotalBalls = m.maxOvers * 6;
+
+    // Test AI Automatic Declarations (Inn 1 >= 430; Inn 3 lead >= 380 with >= 90 ov left, or >= 410 lead)
+    if (m.format === 'TEST' && !inn.declared && inn.wickets < 10 && (!isUserBatting())) {
+      if (inn.innNum === 1 && inn.runs >= 430) {
+        inn.declared = true;
+      } else if (inn.innNum === 3) {
+        const team1Runs = m.innings[0].runs + inn.runs;
+        const team2Runs = m.innings[1].runs;
+        const lead = team1Runs - team2Runs;
+        const remOvers = Math.max(0, Math.floor((maxTotalBalls - totalMatchBalls) / 6));
+        if ((lead >= 380 && remOvers >= 90) || lead >= 410) {
+          inn.declared = true;
+        }
+      }
+    }
+
+    const chasedTarget = inn.target !== null && inn.runs >= inn.target;
+    const allOut = inn.wickets >= 10;
+    const oversDone = m.format !== 'TEST' && inn.balls >= maxTotalBalls;
+    const testClockExpired = m.format === 'TEST' && totalMatchBalls >= maxTotalBalls;
+
+    if (chasedTarget || allOut || oversDone || inn.declared || testClockExpired) {
+      handleInningsComplete(inn, testClockExpired);
+      return true;
+    }
+    return false;
+  }
+
+  function handleInningsComplete(inn, testClockExpired = false) {
+    const m = State.match;
+
+    if (m.format !== 'TEST') {
+      if (m.currentInningsIdx === 0) {
+        const target = inn.runs + 1;
+        m.innings.push(createInningsState(inn.bowlCode, inn.batCode, 2, target));
+        m.currentInningsIdx = 1;
+        m.lastShotType = null;
+        setHeroScorepiece('INNINGS BREAK', String(target), 'TARGET SET', `${TEAMS[inn.bowlCode].name} need ${target} runs to win`, 'outcome-run');
+        renderMatchHUD();
+        if (m.isPvp && State.pvp.active) sendPvPMessage({ type: 'SYNC_MATCH', match: State.match });
+        checkIfAITurn();
+      } else {
+        finalizeMatch();
+      }
+      return;
+    }
+
+    // 5-Day Test Multi-Innings Flow
+    if (testClockExpired) {
+      finalizeMatch();
+      return;
+    }
+
+    const idx = m.currentInningsIdx;
+    if (idx === 0) {
+      m.innings.push(createInningsState(inn.bowlCode, inn.batCode, 2, null));
+      m.currentInningsIdx = 1;
+    } else if (idx === 1) {
+      m.innings.push(createInningsState(m.innings[0].batCode, m.innings[0].bowlCode, 3, null));
+      m.currentInningsIdx = 2;
+    } else if (idx === 2) {
+      const teamA = m.innings[0].batCode;
+      const teamB = m.innings[1].batCode;
+      const teamATotal = m.innings[0].runs + inn.runs;
+      const teamBTotal = m.innings[1].runs;
+      if (teamATotal < teamBTotal) {
+        finalizeMatch();
+        return;
+      }
+      const target = (teamATotal - teamBTotal) + 1;
+      m.innings.push(createInningsState(teamB, teamA, 4, target));
+      m.currentInningsIdx = 3;
+    } else {
+      finalizeMatch();
+      return;
+    }
+
+    m.lastShotType = null;
+    const nextInn = getCurrentInnings();
+    const bannerTxt = nextInn.target ? `TARGET ${nextInn.target}` : `INNINGS ${nextInn.innNum}`;
+    setHeroScorepiece('INNINGS BREAK', bannerTxt, `${TEAMS[nextInn.batCode].code} TO BAT`, `${TEAMS[nextInn.batCode].name} begin Innings ${nextInn.innNum}`, 'outcome-run');
+    renderMatchHUD();
+    if (m.isPvp && State.pvp.active) sendPvPMessage({ type: 'SYNC_MATCH', match: State.match });
+    checkIfAITurn();
+  }
+
+  function finalizeMatch() {
+    const m = State.match;
+    if (!m || m.completed) return;
+    m.completed = true;
+
+    let result = 'Match Drawn';
+    if (m.format !== 'TEST') {
+      const i1 = m.innings[0];
+      const i2 = m.innings[1];
+      if (!i2 || i1.runs > i2.runs) {
+        result = `${TEAMS[i1.batCode].name} won by ${i1.runs - (i2 ? i2.runs : 0)} runs!`;
+      } else if (i2.runs > i1.runs) {
+        result = `${TEAMS[i2.batCode].name} won by ${10 - i2.wickets} wickets!`;
+      } else {
+        result = 'Match Tied!';
+      }
+    } else {
+      const teamA = m.innings[0].batCode;
+      const teamB = m.innings[1].batCode;
+      const sumA = m.innings.filter(x => x.batCode === teamA).reduce((a, b) => a + b.runs, 0);
+      const sumB = m.innings.filter(x => x.batCode === teamB).reduce((a, b) => a + b.runs, 0);
+      const i4 = m.innings[3];
+      if (i4 && i4.target !== null && i4.runs >= i4.target) {
+        result = `${TEAMS[teamB].name} won by ${10 - i4.wickets} wickets!`;
+      } else if (m.innings.length === 3 && sumA < sumB) {
+        result = `${TEAMS[teamB].name} won by an innings and ${sumB - sumA} runs!`;
+      } else if (i4 && (i4.wickets >= 10 || i4.declared) && sumA > sumB) {
+        result = `${TEAMS[teamA].name} won by ${sumA - sumB} runs!`;
+      } else {
+        result = `Match Drawn (Day ${Math.min(5, m.testDay)} Stumps)`;
+      }
+    }
+
+    m.resultText = result;
+    setHeroScorepiece('FULL TIME', 'RESULT', result.toUpperCase(), 'Match complete • View full scorecard', 'outcome-six');
+    renderMatchHUD();
+
+
+    if (m.isPvp && State.pvp.active) sendPvPMessage({ type: 'SYNC_MATCH', match: State.match });
+    openScorecardModal(true);
+  }
+
+  /* ============================================================================
+     7. CALIBRATED AI BATTING PACING (AGGRESSIVE T20/ODI + PATIENT TEST)
+     ============================================================================ */
+  function chooseAIShot() {
+    const m = State.match, inn = getCurrentInnings();
+    if (!m || !inn) return 'PUSH';
+    const s = inn.batters[inn.strikerIdx] || { eyeIn: 0 };
+    const test = m.format === 'TEST';
+    const maxBalls = m.maxOvers * 6;
+    const used = m.innings.reduce((a, x) => a + x.balls, 0);
+    const rem = Math.max(1, test ? maxBalls - used : maxBalls - inn.balls);
+    const wl = Math.max(1, 10 - inn.wickets);
+    const baseRR = m.format === 'T20' ? 8.2 : (m.format === 'ODI' ? 5.8 : 3.0);
+    const need = inn.target !== null ? inn.target - inn.runs : null;
+    const reqRR = need !== null ? (need / rem) * 6 : null;
+    const ovDone = inn.balls / 6;
+    // runW = how much a run is worth right now; wktVal = runs lost by losing a wicket
+    let runW = 1, wktVal = Math.max(4, Math.min(test ? 60 : 40, (rem / 6) * baseRR / (wl + 1) * 0.9));
+    if (test) {
+      runW = 0.6;
+      if (reqRR !== null) {
+        if (reqRR > 5.0) { runW = 0.15; wktVal = 70; }      // chase impossible: bat for the draw
+        else if (reqRR < 3.6) runW = 1.0;
+      } else if (inn.innNum >= 3) runW = 0.8;
+    } else if (reqRR !== null) {
+      runW = Math.max(0.7, Math.min(2.4, reqRR / baseRR));
+      wktVal *= Math.max(0.35, Math.min(1.2, 1.7 - (reqRR / baseRR) * 0.7));
+      if (need <= 8 && rem >= 2) wktVal *= 0.5;
+    } else {
+      const dth = m.format === 'T20' ? ovDone >= 16 : ovDone >= 40;
+      const pp = m.format === 'T20' ? ovDone < 6 : ovDone < 10;
+      runW = dth ? 1.4 : (pp ? 1.15 : 0.95);
+      if (dth) wktVal *= 0.6;
+    }
+    const rates = getPlayerEyeRates(s);
+    const eye = s.eyeIn || 0;
+    const eyeK = 0.0018 * wktVal * (test ? 1.6 : 1);
+    const gains = { STOP: rates.stopGain, PUSH: (rates.pushGainRuns + rates.pushGainDot) / 2, SMASH: test ? -10 : 2, LOFT: test ? -25 : 1 };
+    const opts = [];
+    ['STOP', 'PUSH', 'SMASH', 'LOFT'].forEach(sh => {
+      const p = getShotProbabilities(sh);
+      if (p.locked) return;
+      const mean = [1, 2, 3, 4, 6].reduce((a, k) => a + k * (p.runDist[k] || 0), 0) / 100;
+      const o = p.outPct / 100;
+      const dEye = Math.max(-eye, Math.min(100 - eye, gains[sh]));
+      opts.push({ sh, v: (1 - o) * mean * runW - o * wktVal + dEye * eyeK });
+    });
+    if (!opts.length) return 'PUSH';
+    const best = Math.max(...opts.map(x => x.v));
+    const ws = opts.map(x => Math.exp((x.v - best) / 0.22));
+    let r = Math.random() * ws.reduce((a, b) => a + b, 0);
+    for (let i = 0; i < opts.length; i++) { r -= ws[i]; if (r <= 0) return opts[i].sh; }
+    return opts[0].sh;
+  }
+
+
+  function checkIfAITurn() {
+    const m = State.match;
+    if (!m || m.completed || m.isPvp) return;
+    if (!isUserBatting()) {
+      setTimeout(() => {
+        if (!State.match || State.match.completed || isUserBatting()) return;
+        executeBall(chooseAIShot());
+      }, 240);
+    }
+  }
+
+
+
+
+
+
+  /* ============================================================================
+     8. HUD RENDERING, FIELDING RADAR, SQUAD SWAP & SCORECARD MODALS
+     ============================================================================ */
+  function renderMatchHUD() {
+    const m = State.match;
+    if (!m) return;
+    const inn = getCurrentInnings();
+    if (!inn) return;
+    aiFieldUpdate(m, inn);
+    if (!(m.isPvp && !isUserBowling())) enforceField(m, inn);
+
+    const batTeam = TEAMS[inn.batCode] || TEAMS.IND;
+    document.getElementById('hud-bat-shield').innerHTML = renderTeamShieldSVG(inn.batCode, 26);
+    document.getElementById('hud-bat-code').textContent = batTeam.code;
+    document.getElementById('hud-score').textContent = `${inn.runs}/${inn.wickets}${inn.declared ? 'd' : ''}`;
+    document.getElementById('hud-overs').textContent = m.format === 'TEST'
+      ? `(${formatOvers(inn.balls)} ov)`
+      : `(${formatOvers(inn.balls)}/${m.maxOvers})`;
+
+    const crr = inn.balls > 0 ? ((inn.runs / inn.balls) * 6).toFixed(2) : '0.00';
+    document.getElementById('hud-crr').textContent = `CRR: ${crr} • ${m.pitch}`;
+
+    const targetPill = document.getElementById('hud-target-pill');
+    if (inn.target !== null) {
+      const need = Math.max(0, inn.target - inn.runs);
+      if (m.format === 'TEST') {
+        targetPill.textContent = `TARGET ${inn.target} • NEED ${need}`;
+      } else {
+        const remBalls = Math.max(1, m.maxOvers * 6 - inn.balls);
+        const rrr = ((need / remBalls) * 6).toFixed(2);
+        targetPill.textContent = `NEED ${need} OFF ${remBalls}B • RRR ${rrr}`;
+      }
+    } else if (m.format === 'TEST') {
+      const sumA = m.innings.filter(x => x.batCode === m.innings[0].batCode).reduce((a, b) => a + b.runs, 0);
+      const sumB = m.innings.filter(x => x.batCode === m.innings[1]?.batCode).reduce((a, b) => a + b.runs, 0);
+      const diff = sumA - sumB;
+      if (inn.innNum === 1) targetPill.textContent = 'TEST • 1ST INNINGS';
+      else if (diff >= 0) targetPill.textContent = `${TEAMS[m.innings[0].batCode].code} LEAD BY ${diff}`;
+      else targetPill.textContent = `${TEAMS[m.innings[1].batCode].code} LEAD BY ${Math.abs(diff)}`;
+    } else {
+      targetPill.textContent = `1ST INNINGS • ${m.format}`;
+    }
+
+    const testPill = document.getElementById('hud-test-pill');
+    const decBtn = document.getElementById('btn-declare');
+    if (m.format === 'TEST') {
+      testPill.classList.remove('hidden');
+      const remDayOv = ((540 - m.testDayBalls) / 6).toFixed(1);
+      testPill.textContent = `DAY ${Math.min(5, m.testDay)} • ${remDayOv} OV`;
+      if (isUserBatting() && !m.completed) decBtn.classList.remove('hidden');
+      else decBtn.classList.add('hidden');
+    } else {
+      testPill.classList.add('hidden');
+      decBtn.classList.add('hidden');
+    }
+
+    const pvpPill = document.getElementById('hud-pvp-pill');
+    const voiceBtn = document.getElementById('btn-hud-voice');
+    if (m.isPvp) {
+      pvpPill.classList.remove('hidden');
+      voiceBtn.classList.remove('hidden');
+    } else {
+      pvpPill.classList.add('hidden');
+      voiceBtn.classList.add('hidden');
+    }
+
+    // Left Sidebar: 10-Star Fielding
+    const canEditField = isUserBowling() && !m.completed;
+    document.getElementById('left-in-stars').textContent = m.inRing;
+    document.getElementById('left-out-stars').textContent = 10 - m.inRing;
+    document.getElementById('btn-field-dec').disabled = !canEditField || m.inRing <= 0;
+    document.getElementById('btn-field-inc').disabled = !canEditField || m.inRing >= 10;
+
+    let starsHtml = '';
+    for (let i = 1; i <= 10; i++) {
+      const isIn = i <= m.inRing;
+      starsHtml += `<button type="button" class="star-btn ${isIn ? 'in-star' : 'out-star'}" data-action="set-field-in" data-in="${i}" ${canEditField ? '' : 'disabled'}>★</button>`;
+    }
+    document.getElementById('left-star-strip').innerHTML = starsHtml;
+    document.querySelectorAll('#left-field-presets button').forEach(b => { b.disabled = !canEditField; });
+    renderFielderDots('mini-svg-fielders', 40, 40, 15, 31, 2.5, m.inRing);
+
+    // Batters Box
+    document.getElementById('hud-partnership-side').textContent = `P'SHIP ${inn.partnership.runs} (${inn.partnership.balls})`;
+    const activeBatters = [inn.batters[inn.strikerIdx], inn.batters[inn.nonStrikerIdx]].filter(Boolean);
+    document.getElementById('hud-batters-box').innerHTML = activeBatters.map((b, idx) => {
+      const isStriker = idx === 0;
+      const pwrVal = b.pwr || 117;
+      const weakTag = b.weak && b.weak !== 'NONE' ? `<span class="mini-pill pill-weak">W:${b.weak}</span>` : '';
+      return `<div class="batter-row ${isStriker ? 'striker' : ''}">
+        <div class="batter-top">
+          <span class="player-name-trunc">${isStriker ? '🏏 ' : ''}${b.name}${isStriker ? '*' : ''}</span>
+          <span style="font-family:var(--font-mono);color:var(--gold);flex-shrink:0;">${b.runs} <span style="color:var(--text-muted);font-size:8.5px;">(${b.balls})</span></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:3px;flex-wrap:nowrap;overflow:hidden;">
+          <span class="mini-pill pill-style">${b.style || 'STROKE'}</span>
+          <span class="mini-pill pill-pwr">PWR ${pwrVal}</span>
+          ${weakTag}${traitPill(b)}
+          <span style="margin-left:auto;font-family:var(--font-mono);font-size:8px;color:#6ee7b7;">EYE ${Math.round(b.eyeIn)}%</span>
+        </div>
+        <div class="meter-track"><div class="meter-fill-eye" style="width:${Math.min(100, b.eyeIn)}%;"></div></div>
+      </div>`;
+    }).join('');
+
+    // Bowler Box (NO BOWLER POWER)
+    const bowler = inn.bowlers[inn.currentBowlerIdx];
+    const switchBtn = document.getElementById('btn-switch-bowler');
+    if (m.isPvp && isUserBowling()) switchBtn.classList.remove('hidden');
+    else switchBtn.classList.add('hidden');
+
+    if (bowler) {
+      const bType = bowler.bowlType || 'PACE';
+      const econ = bowler.oversBalls > 0 ? ((bowler.runsConceded / bowler.oversBalls) * 6).toFixed(2) : '0.00';
+      document.getElementById('hud-bowler-box').innerHTML = `
+        <div class="batter-row" style="border-color:rgba(244,63,94,0.35); background:rgba(244,63,94,0.08);">
+          <div class="batter-top">
+            <span class="player-name-trunc">⚾ ${bowler.name}</span>
+            <span class="mini-pill pill-bowltype">${bType}</span>${traitPill(bowler)}
+            <span style="font-family:var(--font-mono);color:#fda4af;flex-shrink:0;">${bowler.wickets}-${bowler.runsConceded} <span style="font-size:8.5px;color:var(--text-muted);">(${formatOvers(bowler.oversBalls)})</span></span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;font-size:8px;font-weight:800;color:var(--text-muted);">
+            <span>SKILL ${bowler.bowl}</span>
+            <span>ECON ${econ}</span>
+          </div>
+        </div>`;
+    }
+
+    // Center Stage Hero
+    const heroBox = document.getElementById('numeric-hero-box');
+    heroBox.className = `numeric-hero-box ${m.heroDisplay.tone || ''}`;
+    document.getElementById('hero-over-stamp').textContent = m.heroDisplay.over;
+    document.getElementById('hero-big-number').textContent = m.heroDisplay.big;
+    document.getElementById('hero-word-tag').textContent = m.heroDisplay.word;
+    document.getElementById('hero-short-line').textContent = m.heroDisplay.sub;
+
+    // This Over Bubbles
+    let bubblesHtml = '';
+    for (let i = 0; i < 6; i++) {
+      const b = inn.thisOver[i];
+      if (b === undefined) {
+        bubblesHtml += `<span class="ball-dot" style="opacity:0.35;">•</span>`;
+      } else {
+        const cls = b === 'W' ? 'b-W' : (b === '6' ? 'b-6' : (b === '4' ? 'b-4' : (b !== '0' ? 'b-run' : '')));
+        bubblesHtml += `<span class="ball-dot ${cls}">${b}</span>`;
+      }
+    }
+    document.getElementById('hud-this-over').innerHTML = bubblesHtml;
+
+    // Recent Overs History
+    document.getElementById('recent-overs-list').innerHTML = inn.overHistory.length
+      ? inn.overHistory.map(ov => `<div class="recent-over-row">
+          <span style="color:var(--gold);">OV ${ov.overNum} (${ov.bowler})</span>
+          <span>${ov.balls.join(' ')}</span>
+          <span style="color:var(--emerald);">${ov.runs} RUNS</span>
+        </div>`).join('')
+      : `<div style="font-size:9.5px;color:var(--text-dim);text-align:center;padding:8px;">Completed overs will appear here</div>`;
+
+    // Right Panel: Shot Cards vs PvP Bowling Panel
+    const shotGrid = document.getElementById('shot-buttons-grid');
+    const pvpBowlPanel = document.getElementById('pvp-bowling-panel');
+    const pauseBanner = document.getElementById('pvp-bowler-pause-banner');
+
+    if (m.isPvp && !isUserBatting()) {
+      shotGrid.classList.add('hidden');
+      pvpBowlPanel.classList.remove('hidden');
+      pvpBowlPanel.style.display = 'flex';
+      document.getElementById('shot-panel-header').textContent = 'BOWLING CONTROLS';
+      document.getElementById('pvp-bowl-field-readout').textContent = `IN CIRCLE: ${m.inRing}★ • OUTSIDE: ${10 - m.inRing}★`;
+      if (bowler) {
+        document.getElementById('pvp-bowl-spell-readout').textContent = `${bowler.name} (${bowler.bowlType || 'PACE'}) • ${bowler.wickets}-${bowler.runsConceded} (${formatOvers(bowler.oversBalls)})`;
+      }
+    } else {
+      shotGrid.classList.remove('hidden');
+      pvpBowlPanel.classList.add('hidden');
+      
+
+      document.getElementById('shot-panel-header').textContent = isUserBatting() ? 'BATTING SHOTS' : 'AI BATTING';
+      if (m.isPvp && m.awaitingBowlerSwitch) pauseBanner.classList.remove('hidden');
+      else pauseBanner.classList.add('hidden');
+
+      const striker = inn.batters[inn.strikerIdx] || { eyeIn: 0, style: 'STROKE MAKER', pwr: 117 };
+      const rates = getPlayerEyeRates(striker);
+      const canClickShot = isUserBatting() && !m.completed && !(m.isPvp && m.awaitingBowlerSwitch);
+
+      const repBadge = document.getElementById('repeat-penalty-badge');
+      if (m.lastShotType === 'SMASH' || m.lastShotType === 'LOFT') {
+        repBadge.classList.remove('hidden');
+        repBadge.textContent = `+3.0% ${m.lastShotType} REPEAT`;
+      } else {
+        repBadge.classList.add('hidden');
+      }
+
+      ['STOP', 'PUSH', 'SMASH', 'LOFT'].forEach(shot => {
+        const p = getShotProbabilities(shot);
+        const btn = document.getElementById(`btn-shot-${shot}`);
+        btn.disabled = !canClickShot || p.locked;
+        if ((shot === 'SMASH' || shot === 'LOFT') && m.lastShotType === shot && !p.locked) {
+          btn.classList.add('repeat-warn');
+        } else {
+          btn.classList.remove('repeat-warn');
+        }
+
+        document.getElementById(`safe-pct-${shot}`).textContent = `SAFE ${p.safePct.toFixed(1)}%`;
+        document.getElementById(`risk-pct-${shot}`).textContent = `OUT ${p.outPct.toFixed(1)}%`;
+        document.getElementById(`bar-safe-${shot}`).style.width = `${p.safePct}%`;
+        document.getElementById(`bar-out-${shot}`).style.width = `${p.outPct}%`;
+        document.getElementById(`out-prob-${shot}`).textContent = p.locked ? 'LOCKED' : `OUT ${p.outPct.toFixed(1)}%`;
+
+        const eyeEl = document.getElementById(`eye-big-${shot}`);
+        if (p.locked) {
+          eyeEl.textContent = `UNLOCKS @ ${shot === 'SMASH' ? 50 : 75}% EYE`;
+          eyeEl.className = 'shot-eye-big locked-test';
+        } else if (shot === 'STOP') {
+          eyeEl.textContent = `+${rates.stopGain}% EYE`;
+          eyeEl.className = 'shot-eye-big';
+        } else if (shot === 'PUSH') {
+          eyeEl.textContent = `+${rates.pushGainRuns}% EYE`;
+          eyeEl.className = 'shot-eye-big';
+        } else if (shot === 'SMASH') {
+          eyeEl.textContent = m.format === 'TEST' ? '-10% EYE' : '+2% EYE';
+          eyeEl.className = m.format === 'TEST' ? 'shot-eye-big eye-drain' : 'shot-eye-big';
+        } else {
+          eyeEl.textContent = m.format === 'TEST' ? '-25% EYE' : '+1% EYE';
+          eyeEl.className = m.format === 'TEST' ? 'shot-eye-big eye-drain' : 'shot-eye-big';
+        }
+
+        const chips = [0, 1, 2, 3, 4, 6]
+          .filter(k => (p.runDist[k] || 0) > 0)
+          .map(k => `<span class="run-chip rc-${k}">${k}:${p.runDist[k]}%</span>`)
+          .join('');
+        document.getElementById(`runs-prob-${shot}`).innerHTML = chips;
+      });
+    }
+  }
+
+  function renderFielderDots(groupId, cx, cy, rIn, rOut, dotR, inCount) {
+    const g = document.getElementById(groupId);
+    if (!g) return;
+    let html = '';
+    const pl = FIELD_PLANS[State.match && State.match.fieldPlan] || {};
+    const sl = Math.min(pl.slips || 0, inCount), ringN = inCount - sl;
+    for (let s = 0; s < sl; s++) html += `<circle cx="${(cx + rIn * (0.28 + s * 0.24)).toFixed(1)}" cy="${(cy + rIn * (0.78 + s * 0.1)).toFixed(1)}" r="${dotR}" fill="#fb923c" stroke="#090d16" stroke-width="0.8"/>`;
+    for (let i = 0; i < ringN; i++) {
+      const ang = (i / Math.max(1, ringN)) * Math.PI * 2 - Math.PI / 2;
+      const x = cx + Math.cos(ang) * rIn;
+      const y = cy + Math.sin(ang) * rIn;
+      html += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${dotR}" fill="#facc15" stroke="#090d16" stroke-width="0.8"/>`;
+    }
+    const outCount = 10 - inCount;
+    for (let j = 0; j < outCount; j++) {
+      const ang = (j / Math.max(1, outCount)) * Math.PI * 2 - Math.PI / 4;
+      const x = cx + Math.cos(ang) * rOut;
+      const y = cy + Math.sin(ang) * rOut;
+      html += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${dotR}" fill="#38bdf8" stroke="#090d16" stroke-width="0.8"/>`;
+    }
+    g.innerHTML = html;
+  }
+
+  function setFieldInStars(newIn) {
+    const m = State.match;
+    if (!m || !isUserBowling() || m.completed) return;
+    m.inRing = Math.max(fieldMinIn(m, getCurrentInnings()), Math.min(10, Number(newIn)));
+    m.fieldPlan = 'CUSTOM';
+    renderMatchHUD();
+    if (document.getElementById('modal-field').classList.contains('open')) {
+      renderFieldModal();
+    }
+    if (m.isPvp && State.pvp.active) {
+      sendPvPMessage({ type: 'SYNC_MATCH', match: State.match });
+    }
+  }
+
+  function openFieldingModal() {
+    renderFieldModal();
+    openModal('modal-field');
+  }
+
+  function renderFieldModal() {
+    const m = State.match;
+    if (!m) return;
+    const canEdit = isUserBowling() && !m.completed;
+    document.getElementById('modal-field-readonly-badge').classList.toggle('hidden', canEdit);
+    document.getElementById('modal-field-step-btns').style.display = canEdit ? 'flex' : 'none';
+    document.getElementById('modal-field-presets').style.display = canEdit ? 'flex' : 'none';
+    { const inn0 = getCurrentInnings(); const mn = fieldMinIn(m, inn0);
+      document.getElementById('modal-field-summary').innerHTML = `IN ${m.inRing}★ • OUT ${10 - m.inRing}★ • ${(FIELD_PLANS[m.fieldPlan] || FIELD_PLANS.CUSTOM).n}<div style="font-size:9.5px;font-weight:700;color:#94a3b8;margin-top:2px;">${fieldNote(m.fieldPlan)}${mn ? ` • RULE: min ${mn} in ring this phase` : ''}</div>`; }
+
+    renderFielderDots('modal-svg-fielders', 130, 130, 50, 102, 6.5, m.inRing);
+
+    let starsRow = '';
+    for (let i = 1; i <= 10; i++) {
+      const isIn = i <= m.inRing;
+      starsRow += `<button type="button" class="star-btn ${isIn ? 'in-star' : 'out-star'}" style="flex:1;padding:4px 0;font-size:12px;" data-action="set-field-in" data-in="${i}" ${canEdit ? '' : 'disabled'}>★</button>`;
+    }
+    document.getElementById('modal-stars-row').innerHTML = starsRow;
+
+    const rows = ['STOP', 'PUSH', 'SMASH', 'LOFT'].map(s => {
+      const p = getShotProbabilities(s);
+      return `<tr>
+        <td>${s}</td>
+        <td style="color:#ff6b6b;font-weight:900;">${p.locked ? 'LOCKED' : p.outPct.toFixed(1) + '%'}</td>
+        <td>${p.runDist[0]}%</td>
+        <td>${p.runDist[1]}%</td>
+        <td>${p.runDist[2]}%</td>
+        <td>${p.runDist[3]}%</td>
+        <td style="color:#7dd3fc;font-weight:800;">${p.runDist[4]}%</td>
+        <td style="color:#fde047;font-weight:800;">${p.runDist[6]}%</td>
+        <td style="color:#6ee7b7;font-weight:900;">${p.locked ? '-' : ((1 - p.outPct / 100) * (p.runDist[1] + 2 * p.runDist[2] + 3 * p.runDist[3] + 4 * p.runDist[4] + 6 * p.runDist[6]) / 100).toFixed(2)}</td>
+      </tr>`;
+    }).join('');
+    document.getElementById('modal-prob-table').innerHTML = `<thead>
+      <tr><th>SHOT</th><th>OUT%</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>6</th><th>RPB</th></tr>
+    </thead><tbody>${rows}</tbody>`;
+  }
+
+  /* ==================== SQUAD SWAP MODAL ==================== */
+  function openSquadModal(side = 'p1') {
+    State.squadModalSide = side;
+    State.selectedSwapIdx = null;
+    renderSquadModal();
+    openModal('modal-squad');
+  }
+
+  function renderSquadModal() {
+    const side = State.squadModalSide;
+    const code = side === 'p1' ? State.p1Team : State.p2Team;
+    const roster = getTeamRoster(code);
+
+    document.getElementById('tab-squad-p1').className = `btn btn-xs ${side === 'p1' ? 'btn-gold' : ''}`;
+    document.getElementById('tab-squad-p1').textContent = `P1: ${TEAMS[State.p1Team].code} XI`;
+    document.getElementById('tab-squad-p2').className = `btn btn-xs ${side === 'p2' ? 'btn-gold' : ''}`;
+    document.getElementById('tab-squad-p2').textContent = `P2: ${TEAMS[State.p2Team].code} XI`;
+
+    const xi = roster.slice(0, 11);
+    const bowlCount = xi.filter(p => p.role === 'BOWL' || p.role === 'AR').length;
+    const wkCount = xi.filter(p => p.role === 'WK').length;
+    const badge = document.getElementById('squad-quota-badge');
+    badge.textContent = `WK: ${wkCount}/1 • BOWL/AR: ${bowlCount}/5`;
+    badge.style.color = (bowlCount >= 5 && wkCount >= 1) ? '#6ee7b7' : '#fca5a5';
+
+    const cancelBtn = document.getElementById('btn-cancel-swap');
+    const statusTxt = document.getElementById('swap-status-text');
+    if (State.selectedSwapIdx !== null) {
+      cancelBtn.classList.remove('hidden');
+      statusTxt.textContent = `Selected #${State.selectedSwapIdx + 1} ${roster[State.selectedSwapIdx].name} — tap any player to swap!`;
+    } else {
+      cancelBtn.classList.add('hidden');
+      statusTxt.textContent = 'Tap any player to select, then tap another player to swap positions!';
+    }
+
+    const renderRow = (p, idx) => {
+      const sel = State.selectedSwapIdx === idx ? 'selected-swap' : '';
+      return `<div class="player-swap-row ${sel}" data-action="squad-tap-player" data-idx="${idx}">
+        <div style="display:flex;align-items:center;gap:5px;min-width:0;">
+          <span style="font-family:var(--font-mono);color:var(--text-muted);font-weight:900;">#${idx + 1}</span>
+          <span class="role-badge role-${p.role}">${p.role}</span>
+          <span class="player-name-trunc" style="font-weight:800;">${p.name}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:9.5px;flex-shrink:0;">
+          <span style="color:#7dd3fc;">BAT ${p.bat}</span>
+          <span style="color:#fda4af;">BWL ${p.bowl}</span>
+          <span style="color:var(--gold);">PWR ${p.pwr}</span>
+          <span style="color:#c4b5fd;">${TRAIT_INFO[p.trait] ? '★' + TRAIT_INFO[p.trait].l : ''}</span>
+        </div>
+      </div>`;
+    };
+
+    document.getElementById('squad-xi-list').innerHTML = roster.slice(0, 11).map((p, i) => renderRow(p, i)).join('');
+    document.getElementById('squad-bench-list').innerHTML = roster.slice(11, 15).map((p, i) => renderRow(p, i + 11)).join('');
+  }
+
+  function handleSquadTapPlayer(idx) {
+    SoundFX.play('click');
+    const code = State.squadModalSide === 'p1' ? State.p1Team : State.p2Team;
+    const roster = getTeamRoster(code);
+    if (State.selectedSwapIdx === null) {
+      State.selectedSwapIdx = idx;
+    } else if (State.selectedSwapIdx === idx) {
+      State.selectedSwapIdx = null;
+    } else {
+      const tmp = roster[State.selectedSwapIdx];
+      roster[State.selectedSwapIdx] = roster[idx];
+      roster[idx] = tmp;
+      State.selectedSwapIdx = null;
+    }
+    renderSquadModal();
+  }
+
+  function autoOptimizeSquad() {
+    SoundFX.play('click');
+    const code = State.squadModalSide === 'p1' ? State.p1Team : State.p2Team;
+    const roster = getTeamRoster(code);
+    const wks = roster.filter(p => p.role === 'WK').sort((a, b) => b.bat - a.bat);
+    const bats = roster.filter(p => p.role === 'BAT').sort((a, b) => b.bat - a.bat);
+    const ars = roster.filter(p => p.role === 'AR').sort((a, b) => (b.bat + b.bowl) - (a.bat + a.bowl));
+    const bowls = roster.filter(p => p.role === 'BOWL').sort((a, b) => b.bowl - a.bowl);
+
+    const xi = [];
+    if (wks[0]) xi.push(wks[0]);
+    xi.push(...bats.slice(0, 4));
+    xi.push(...ars.slice(0, 2));
+    xi.push(...bowls.slice(0, 4));
+    roster.forEach(p => { if (xi.length < 11 && !xi.includes(p)) xi.push(p); });
+    const bench = roster.filter(p => !xi.includes(p));
+    State.customSquads[code] = [...xi, ...bench];
+    State.selectedSwapIdx = null;
+    renderSquadModal();
+  }
+
+  /* ==================== BOWLER MODAL & SCORECARD MODAL ==================== */
+  function openBowlerModal(mandatory = false) {
+    const m = State.match;
+    const inn = getCurrentInnings();
+    if (!m || !inn) return;
+    const maxOv = getMaxOversPerBowler(m.format);
+    const maxBalls = maxOv * 6;
+    document.getElementById('bowler-quota-info').textContent = m.format === 'TEST' ? 'UNLIMITED OV' : `MAX ${maxOv} OV`;
+    document.getElementById('btn-close-bowler-modal').style.display = mandatory ? 'none' : 'inline-flex';
+
+    const listHtml = inn.bowlers.map((b, idx) => {
+      if (b.role !== 'BOWL' && b.role !== 'AR') return '';
+      const consec = idx === inn.lastBowlerIdx;
+      const maxed = b.oversBalls >= maxBalls;
+      const disabled = consec || maxed;
+      const reason = consec ? 'CONSECUTIVE OVER' : (maxed ? 'QUOTA FULL' : `${b.bowlType || 'PACE'} • SKILL ${b.bowl}`);
+      return `<div style="display:flex;align-items:center;justify-content:space-between;background:#132036;border:1px solid var(--border-subtle);border-radius:7px;padding:6px 9px;">
+        <div>
+          <div style="font-size:11px;font-weight:800;">${b.name} <span class="mini-pill pill-bowltype">${b.bowlType || 'PACE'}</span></div>
+          <div style="font-size:9.5px;color:var(--text-muted);">${reason} • ${b.wickets}-${b.runsConceded} (${formatOvers(b.oversBalls)})</div>
+        </div>
+        <button type="button" class="btn btn-xs btn-emerald" data-action="select-bowler" data-idx="${idx}" ${disabled ? 'disabled' : ''}>BOWL</button>
+      </div>`;
+    }).join('');
+
+    document.getElementById('bowler-options-list').innerHTML = listHtml;
+    openModal('modal-bowler');
+  }
+
+  function openScorecardModal(isMatchEnd = false) {
+    const m = State.match;
+    if (!m) return;
+    document.getElementById('sc-modal-title').textContent = m.completed ? `🏆 ${m.resultText}` : '📋 MATCH SCORECARD';
+
+    const tabsHtml = m.innings.map((inn, i) => `<button type="button" class="btn btn-xs ${i === m.currentInningsIdx ? 'btn-gold' : ''}" data-action="sc-switch-inn" data-idx="${i}">INN ${i + 1} (${TEAMS[inn.batCode].code})</button>`).join('');
+    document.getElementById('sc-innings-tabs').innerHTML = tabsHtml;
+
+    const footerHtml = isMatchEnd && m.completed
+      ? `<button type="button" class="btn btn-emerald" data-action="post-match-continue">CONTINUE →</button>`
+      : `<button type="button" class="btn btn-emerald" data-action="close-modal" data-modal="modal-scorecard">RESUME MATCH</button>`;
+    document.getElementById('sc-modal-footer').innerHTML = footerHtml;
+
+    renderScorecardInnings(m.currentInningsIdx);
+    openModal('modal-scorecard');
+  }
+
+  function renderScorecardInnings(innIdx) {
+    const m = State.match;
+    const inn = m && m.innings[innIdx];
+    if (!inn) return;
+
+    document.querySelectorAll('#sc-innings-tabs button').forEach((b, i) => {
+      b.className = `btn btn-xs ${i === innIdx ? 'btn-gold' : ''}`;
+    });
+
+    const batRows = inn.batters.map(b => {
+      const sr = b.balls > 0 ? ((b.runs / b.balls) * 100).toFixed(1) : '0.0';
+      const didBat = b.balls > 0 || b.out || inn.batters.indexOf(b) === inn.strikerIdx || inn.batters.indexOf(b) === inn.nonStrikerIdx;
+      return `<tr>
+        <td>${b.name}${!b.out && didBat ? '*' : ''}</td>
+        <td style="color:var(--text-muted);font-size:9px;">${didBat ? b.dismissal : 'yet to bat'}</td>
+        <td style="color:var(--gold);font-weight:900;">${didBat ? b.runs : '-'}</td>
+        <td>${didBat ? b.balls : '-'}</td>
+        <td>${didBat ? b.fours : '-'}</td>
+        <td>${didBat ? b.sixes : '-'}</td>
+        <td>${didBat ? sr : '-'}</td>
+      </tr>`;
+    }).join('');
+
+    const bowlRows = inn.bowlers.filter(b => b.oversBalls > 0).map(b => {
+      const econ = ((b.runsConceded / b.oversBalls) * 6).toFixed(2);
+      return `<tr>
+        <td>${b.name}</td>
+        <td>${b.bowlType || 'PACE'}</td>
+        <td>${formatOvers(b.oversBalls)}</td>
+        <td>${b.maidens}</td>
+        <td>${b.runsConceded}</td>
+        <td style="color:var(--crimson);font-weight:900;">${b.wickets}</td>
+        <td>${econ}</td>
+      </tr>`;
+    }).join('');
+
+    document.getElementById('sc-modal-body').innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;padding:5px 8px;background:rgba(15,23,42,0.8);border-radius:7px;">
+        <span style="font-weight:900;color:var(--gold);">${TEAMS[inn.batCode].name} — ${inn.runs}/${inn.wickets}${inn.declared ? 'd' : ''} (${formatOvers(inn.balls)} ov)</span>
+        <span style="font-size:10px;color:var(--text-muted);">CRR: ${inn.balls > 0 ? ((inn.runs / inn.balls) * 6).toFixed(2) : '0.00'}</span>
+      </div>
+      <table class="data-table" style="margin-bottom:10px;">
+        <thead><tr><th>BATTER</th><th>DISMISSAL</th><th>R</th><th>B</th><th>4S</th><th>6S</th><th>SR</th></tr></thead>
+        <tbody>${batRows}</tbody>
+      </table>
+      <table class="data-table">
+        <thead><tr><th>BOWLER</th><th>TYPE</th><th>O</th><th>M</th><th>R</th><th>W</th><th>ECON</th></tr></thead>
+        <tbody>${bowlRows || '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);">No overs bowled yet</td></tr>'}</tbody>
+      </table>`;
+  }
+
+  /* ============================================================================
+     9. T20 WORLD CUP 2026, BILATERAL SERIES & ONLINE PVP / VOICE
+     ============================================================================ */
+
+
+
+
+
+
+
+
+  /* ==================== ONLINE PVP (BROADCASTCHANNEL + OPT-IN MIC) ==================== */
+  function sendPvPMessage(payload) {
+    if (State.pvp.bc) {
+      try { State.pvp.bc.postMessage({ code: State.pvp.roomCode, ...payload }); } catch (e) {}
+    }
+  }
+
+  function setupPvPChannel(code) {
+    if (State.pvp.bc) {
+      try { State.pvp.bc.close(); } catch (e) {}
+    }
+    if (typeof BroadcastChannel !== 'undefined') {
+      State.pvp.bc = new BroadcastChannel('wcc_2026_pvp_' + code);
+      State.pvp.bc.onmessage = (ev) => {
+        const data = ev.data;
+        if (!data || data.code !== State.pvp.roomCode) return;
+        if (data.type === 'GUEST_JOINED' && State.pvp.role === 'HOST') {
+          State.p2Team = data.guestTeam;
+          initMatch({
+            mode: 'PVP',
+            p1Team: State.p1Team,
+            p2Team: State.p2Team,
+            format: document.getElementById('pvp-host-fmt').value,
+            pitch: document.getElementById('pvp-host-pitch').value,
+            skipToss: true,
+            batFirst: State.p1Team,
+            isPvp: true
+          });
+          sendPvPMessage({ type: 'SYNC_MATCH', match: State.match });
+        } else if (data.type === 'SYNC_MATCH') {
+          State.match = data.match;
+          if (!document.getElementById('view-match').classList.contains('active')) {
+            switchView('view-match');
+          }
+          renderMatchHUD();
+        } else if (data.type === 'BOWLER_CHOSEN' && State.match) {
+          const inn = getCurrentInnings();
+          if (inn && inn.bowlers[data.bowlerIdx]) {
+            inn.currentBowlerIdx = data.bowlerIdx;
+            State.match.awaitingBowlerSwitch = false;
+            State.match.pendingBowlerSwitch = false;
+            setHeroScorepiece('NEW OVER', inn.bowlCode, 'BOWLER', lastName(inn.bowlers[data.bowlerIdx].name), 'outcome-run');
+            renderMatchHUD();
+          }
+        }
+      };
+    }
+  }
+
+  async function togglePvPMic() {
+    SoundFX.play('click');
+    const pvp = State.pvp;
+    const statusEl = document.getElementById('pvp-voice-status');
+    const btnLobby = document.getElementById('btn-pvp-mic');
+    const btnHud = document.getElementById('btn-hud-voice');
+    const speakPill = document.getElementById('hud-speaking-pill');
+
+    if (pvp.micOn) {
+      pvp.micOn = false;
+      if (pvp.localStream) {
+        pvp.localStream.getTracks().forEach(t => t.stop());
+        pvp.localStream = null;
+      }
+      if (statusEl) statusEl.textContent = 'Voice off • Standby';
+      if (btnLobby) btnLobby.textContent = '🎙️ VOICE: OFF';
+      if (btnHud) btnHud.textContent = '🎙️ VOICE: OFF';
+      if (speakPill) speakPill.classList.add('hidden');
+      return;
+    }
+
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('Mic unavailable');
+      }
+      pvp.localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      pvp.micOn = true;
+      if (statusEl) statusEl.textContent = '🎙️ Mic live • Connected';
+      if (btnLobby) btnLobby.textContent = '🎙️ VOICE: ON';
+      if (btnHud) btnHud.textContent = '🎙️ VOICE: ON';
+      if (speakPill) speakPill.classList.remove('hidden');
+    } catch (e) {
+      if (statusEl) statusEl.textContent = 'Mic permission unavailable (game sync active)';
+    }
+  }
+
+  /* ============================================================================
+     10. VIEW & MODAL HELPERS + UNIFIED DELEGATED EVENT ROUTER
+     ============================================================================ */
+  function switchView(viewId) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    const target = document.getElementById(viewId);
+    if (target) target.classList.add('active');
+  }
+
+  function openModal(modalId) {
+    const el = document.getElementById(modalId);
+    if (el) el.classList.add('open');
+  }
+
+  function closeModal(modalId) {
+    const el = document.getElementById(modalId);
+    if (el) el.classList.remove('open');
+  }
+
+  function closeAllModals() {
+    document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('open'));
+  }
+
+  function showBroadcastDialog(title, body, buttons) {
+    document.getElementById('dlg-title').textContent = title;
+    document.getElementById('dlg-body').textContent = body;
+    const act = document.getElementById('dlg-actions');
+    act.innerHTML = '';
+    buttons.forEach(b => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `btn ${b.cls || ''}`;
+      btn.textContent = b.label;
+      btn.addEventListener('click', () => {
+        closeModal('modal-dialog');
+        if (b.onClick) b.onClick();
+      });
+      act.appendChild(btn);
+    });
+    openModal('modal-dialog');
+  }
+
+  function syncHomeUI() {
+    document.getElementById('sel-p1-team').value = State.p1Team;
+    document.getElementById('sel-p2-team').value = State.p2Team;
+    document.getElementById('home-p1-shield').innerHTML = renderTeamShieldSVG(State.p1Team, 34);
+    document.getElementById('home-p2-shield').innerHTML = renderTeamShieldSVG(State.p2Team, 34);
+
+    document.querySelectorAll('#format-pills .pill-opt').forEach(el => {
+      el.classList.toggle('active', el.dataset.val === State.format);
+    });
+    document.querySelectorAll('#pitch-pills .pill-opt').forEach(el => {
+      el.classList.toggle('active', el.dataset.val === State.pitch);
+    });
+  }
+
+  function populateTeamSelects() {
+    const opts = Object.values(TEAMS).map(t => `<option value="${t.code}">${t.name} (${t.code})</option>`).join('');
+    ['sel-p1-team', 'sel-p2-team', 'pvp-host-team', 'pvp-join-team'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = opts;
+    });
+    document.getElementById('sel-p1-team').value = State.p1Team;
+    document.getElementById('sel-p2-team').value = State.p2Team;
+    document.getElementById('pvp-host-team').value = State.p1Team;
+    document.getElementById('pvp-join-team').value = State.p2Team;
+  }
+
+  function handleAction(target, e) {
+    const action = target.dataset.action;
+    if (!action) return;
+    if (e && typeof e.preventDefault === 'function' && target.tagName !== 'SELECT' && target.tagName !== 'INPUT') {
+      e.preventDefault();
+    }
+
+    try {
+      switch (action) {
+        case 'toggle-audio': {
+          SoundFX.enabled = !SoundFX.enabled;
+          document.getElementById('btn-audio-home').textContent = SoundFX.enabled ? '🔊 SFX ON' : '🔇 SFX OFF';
+          if (SoundFX.enabled) SoundFX.play('click');
+          break;
+        }
+        case 'go-home': {
+          SoundFX.play('click');
+          closeAllModals();
+          switchView('view-home');
+          syncHomeUI();
+          break;
+        }
+        case 'set-home-mode': {
+          SoundFX.play('click');
+          const online = target.dataset.val === 'online';
+          const show = (id, on) => { const el = document.getElementById(id); if (el) el.style.display = on ? '' : 'none'; };
+          show('home-sp-grid', !online); show('home-sp-panel', !online);
+          show('home-online-grid', online); show('home-online-panel', online);
+          document.querySelectorAll('.home-tab').forEach(b => b.classList.toggle('active', b.dataset.val === (online ? 'online' : 'sp')));
+          break;
+        }
+        case 'set-format': {
+          SoundFX.play('click');
+          State.format = target.dataset.val;
+          syncHomeUI();
+          break;
+        }
+        case 'set-pitch': {
+          SoundFX.play('click');
+          State.pitch = target.dataset.val;
+          syncHomeUI();
+          break;
+        }
+        case 'swap-home-teams': {
+          SoundFX.play('click');
+          const tmp = State.p1Team;
+          State.p1Team = State.p2Team;
+          State.p2Team = tmp;
+          syncHomeUI();
+          break;
+        }
+        case 'open-squad-modal': {
+          SoundFX.play('click');
+          openSquadModal(target.dataset.team || 'p1');
+          break;
+        }
+        case 'switch-squad-tab': {
+          SoundFX.play('click');
+          openSquadModal(target.dataset.side || 'p1');
+          break;
+        }
+        case 'squad-tap-player': {
+          handleSquadTapPlayer(Number(target.dataset.idx));
+          break;
+        }
+        case 'cancel-swap-select': {
+          SoundFX.play('click');
+          State.selectedSwapIdx = null;
+          renderSquadModal();
+          break;
+        }
+        case 'auto-optimize-squad': {
+          autoOptimizeSquad();
+          break;
+        }
+        case 'close-modal': {
+          SoundFX.play('click');
+          if (target.dataset.modal) closeModal(target.dataset.modal);
+          break;
+        }
+        case 'start-quick-match': {
+          SoundFX.play('click');
+          initMatch({
+            mode: 'QUICK',
+            p1Team: State.p1Team,
+            p2Team: State.p2Team,
+            format: State.format,
+            pitch: State.pitch,
+          });
+          break;
+        }
+        case 'call-toss': {
+          handleTossCall(target.dataset.call);
+          break;
+        }
+        case 'choose-toss-decision': {
+          SoundFX.play('click');
+          const m = State.match;
+          const dec = target.dataset.decision;
+          const batFirst = dec === 'BAT' ? m.p1Team : m.p2Team;
+          const bowlFirst = batFirst === m.p1Team ? m.p2Team : m.p1Team;
+          closeModal('modal-toss');
+          beginMatchAfterToss(batFirst, bowlFirst, false);
+          break;
+        }
+        case 'play-shot': {
+          executeBall(target.dataset.shot);
+          break;
+        }
+        case 'declare-innings': {
+          SoundFX.play('click');
+          const inn = getCurrentInnings();
+          if (State.match && State.match.format === 'TEST' && inn && isUserBatting()) {
+            showBroadcastDialog('DECLARE INNINGS?', `Declare ${TEAMS[inn.batCode].name}'s innings at ${inn.runs}/${inn.wickets}?`, [
+              { label: 'CANCEL' },
+              {
+                label: 'DECLARE',
+                cls: 'btn-gold',
+                onClick: () => {
+                  inn.declared = true;
+                  handleInningsComplete(inn, false);
+                }
+              }
+            ]);
+          }
+          break;
+        }
+        case 'confirm-exit-match': {
+          SoundFX.play('click');
+          showBroadcastDialog('EXIT MATCH?', 'Return to the main broadcast lobby? Current match progress will end.', [
+            { label: 'STAY IN MATCH' },
+            {
+              label: 'EXIT TO HOME',
+              cls: 'btn-crimson',
+              onClick: () => {
+                closeAllModals();
+                switchView('view-home');
+                syncHomeUI();
+              }
+            }
+          ]);
+          break;
+        }
+        case 'open-fielding-modal': {
+          SoundFX.play('click');
+          openFieldingModal();
+          break;
+        }
+        case 'set-field-in': {
+          SoundFX.play('click');
+          setFieldInStars(Number(target.dataset.in));
+          break;
+        }
+        case 'set-field-plan': {
+          SoundFX.play('click');
+          setFieldPlan(target.dataset.plan);
+          break;
+        }
+        case 'adjust-field-delta': {
+          SoundFX.play('click');
+          if (State.match) setFieldInStars(State.match.inRing + Number(target.dataset.delta));
+          break;
+        }
+        case 'field-ring-in': {
+          SoundFX.play('click');
+          if (State.match) setFieldInStars(State.match.inRing + 1);
+          break;
+        }
+        case 'field-ring-out': {
+          SoundFX.play('click');
+          if (State.match) setFieldInStars(State.match.inRing - 1);
+          break;
+        }
+        case 'switch-bowler-trigger': {
+          SoundFX.play('click');
+          if (State.match && State.match.isPvp && isUserBowling()) {
+            openBowlerModal(false);
+          }
+          break;
+        }
+        case 'select-bowler': {
+          SoundFX.play('click');
+          const idx = Number(target.dataset.idx);
+          const m = State.match;
+          const inn = getCurrentInnings();
+          if (inn && inn.bowlers[idx]) {
+            inn.currentBowlerIdx = idx;
+            m.awaitingBowlerSwitch = false;
+            m.pendingBowlerSwitch = false;
+            closeModal('modal-bowler');
+            setHeroScorepiece('BOWLER', inn.bowlCode, 'CHANGE', lastName(inn.bowlers[idx].name), 'outcome-run');
+            if (m.isPvp && State.pvp.active) {
+              sendPvPMessage({ type: 'BOWLER_CHOSEN', bowlerIdx: idx });
+            }
+            renderMatchHUD();
+            checkIfAITurn();
+          }
+          break;
+        }
+        case 'open-scorecard': {
+          SoundFX.play('click');
+          openScorecardModal(false);
+          break;
+        }
+        case 'sc-switch-inn': {
+          SoundFX.play('click');
+          renderScorecardInnings(Number(target.dataset.idx));
+          break;
+        }
+        case 'post-match-continue': {
+          SoundFX.play('click');
+          closeAllModals();
+          switchView('view-home');
+          syncHomeUI();
+          break;
+        }
+        // World Cup 2026 Actions
+        // Bilateral Series Actions
+        // Online PvP Actions
+        case 'open-pvp-screen': {
+          SoundFX.play('click');
+          switchView('view-pvp');
+          break;
+        }
+        case 'pvp-create-room': {
+          SoundFX.play('click');
+          const code = String(Math.floor(10000 + Math.random() * 90000));
+          State.p1Team = document.getElementById('pvp-host-team').value;
+          State.pvp.active = true;
+          State.pvp.role = 'HOST';
+          State.pvp.roomCode = code;
+          document.getElementById('pvp-room-code-display').textContent = code;
+          document.getElementById('pvp-conn-msg').textContent = `Hosting room ${code} — open a 2nd tab & enter ${code} to play!`;
+          setupPvPChannel(code);
+          break;
+        }
+        case 'pvp-join-room': {
+          SoundFX.play('click');
+          const code = (document.getElementById('pvp-join-input').value || '').trim();
+          if (code.length !== 5) {
+            document.getElementById('pvp-conn-msg').textContent = 'Enter a valid 5-digit room code.';
+            return;
+          }
+          State.p2Team = document.getElementById('pvp-join-team').value;
+          State.pvp.active = true;
+          State.pvp.role = 'GUEST';
+          State.pvp.roomCode = code;
+          setupPvPChannel(code);
+          sendPvPMessage({ type: 'GUEST_JOINED', guestTeam: State.p2Team });
+          document.getElementById('pvp-conn-msg').textContent = `Connected to room ${code}! Waiting for host sync...`;
+          break;
+        }
+        case 'pvp-toggle-mic': {
+          togglePvPMic();
+          break;
+        }
+      }
+    } catch (err) {
+      console.error('Action error:', action, err);
+    }
+  }
+
+  function bindEvents() {
+    document.addEventListener('click', (e) => {
+      const target = e.target.closest('[data-action]');
+      if (target) {
+        handleAction(target, e);
+      }
+    });
+
+    document.addEventListener('change', (e) => {
+      const id = e.target.id;
+      try {
+        if (id === 'sel-p1-team') {
+          State.p1Team = e.target.value;
+          syncHomeUI();
+        } else if (id === 'sel-p2-team') {
+          State.p2Team = e.target.value;
+          syncHomeUI();
+        }
+      } catch (err) {
+        console.error('Change error:', id, err);
+      }
+    });
+  }
+
+  function initApp() {
+    try {
+      closeAllModals();
+      populateTeamSelects();
+      syncHomeUI();
+      bindEvents();
+    } catch (err) {
+      console.error('Init error:', err);
+    }
+  }
+
+  if (document.readyState !== 'loading') {
+    initApp();
+  } else {
+    document.addEventListener('DOMContentLoaded', initApp);
+  }
+})();
+</script>
+</body>
+</html>
